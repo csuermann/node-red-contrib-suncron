@@ -1,0 +1,44 @@
+{
+  "name": "node-red-contrib-suncron",
+  "version": "1.0.0",
+  "description": "This Node-RED node can output configurable messages at significant sun events (e.g. sunrise, sunset etc.)",
+  "main": "index.js",
+  "author": "Cornelius Suermann",
+  "license": "MIT",
+  "keywords": [
+    "node-red",
+    "smart home",
+    "sun",
+    "sunset",
+    "sunrise",
+    "cron"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/csuermann/suncron"
+  },
+  "scripts": {
+    "test": "mocha \"test/**/*_spec.js\""
+  },
+  "node-red": {
+    "nodes": {
+      "suncron": "suncron.js"
+    }
+  },
+  "dependencies": {
+    "cron": "^1.7.1",
+    "dayjs": "^1.8.15"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "mocha": "^6.2.0",
+    "node-red": "^0.20.7",
+    "node-red-node-test-helper": "^0.2.3"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  }
+}

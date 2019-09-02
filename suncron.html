@@ -1,0 +1,415 @@
+<script type="text/javascript">
+  const calcDuration = type => {
+    // type can be 'min' or 'max'
+    let hours = Number($(`#node-input-${type}DurationHours`).val())
+    let minutes = Number($(`#node-input-${type}DurationMinutes`).val())
+    let seconds = Number($(`#node-input-${type}DurationSeconds`).val())
+    return hours * 3600 + minutes * 60 + seconds
+  }
+
+  RED.nodes.registerType('presence-faker', {
+    category: 'smart home',
+    color: '#FFAAAA',
+    defaults: {
+      name: { value: '' },
+      onPayload: {
+        value: '',
+        validate: RED.validators.typedInput('payloadType'),
+      },
+      onPayloadType: { value: 'string' },
+      onTopic: { value: '', required: false },
+      offPayload: {
+        value: '',
+        validate: RED.validators.typedInput('payloadType'),
+      },
+      offPayloadType: { value: 'string' },
+      offTopic: { value: '', required: false },
+      windowBegin: {
+        value: '07:30',
+        required: true,
+        validate: RED.validators.regex(
+          /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/
+        ),
+      },
+      windowEnd: {
+        value: '17:30',
+        required: true,
+        validate: RED.validators.regex(
+          /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/
+        ),
+      },
+      minDurationHours: { value: 0, required: true },
+      minDurationMinutes: { value: 0, required: true },
+      minDurationSeconds: { value: 0, required: true },
+      minDuration: { value: 0 },
+      maxDurationHours: { value: 0, required: true },
+      maxDurationMinutes: { value: 0, required: true },
+      maxDurationSeconds: { value: 0, required: true },
+      maxDuration: { value: 0 },
+      minCount: {
+        value: 1,
+        required: true,
+        validate: function (v) {
+          if (!/\d+/.exec(v)) {
+            return false
+          } else {
+            return true
+          }
+        },
+      },
+      maxCount: {
+        value: 1,
+        required: true,
+        validate: function (v) {
+          if (!/\d+/.exec(v)) {
+            return false
+          }
+
+          if (calcDuration('min') > calcDuration('max')) {
+            return false
+          }
+
+          return true
+        },
+      },
+      startupBehavior: { value: 'onMsg' },
+      actionOnDisable: { value: 'none' },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'light.png',
+    label: function () {
+      return this.name || 'presence-faker'
+    },
+    oneditprepare: function () {
+      //ON Payload
+      if (this.onPayloadType == null) {
+        if (this.onPayload == '') {
+          this.onPayloadType = 'date'
+        } else {
+          this.onPayloadType = 'str'
+        }
+      } else if (
+        this.onPayloadType === 'string' ||
+        this.onPayloadType === 'none'
+      ) {
+        this.onPayloadType = 'str'
+      }
+      $('#node-input-onPayloadType').val(this.onPayloadType)
+      $('#node-input-onPayload').typedInput({
+        default: 'str',
+        typeField: $('#node-input-onPayloadType'),
+        types: [
+          //'flow',
+          //'global',
+          'str',
+          'num',
+          'bool',
+          'json',
+          //'bin',
+          //'date',
+          //'env'
+        ],
+      })
+      $('#node-input-onPayload').typedInput('type', this.onPayloadType)
+
+      //OFF Payload
+      if (this.offPayloadType == null) {
+        if (this.offPayload == '') {
+          this.offPayloadType = 'date'
+        } else {
+          this.offPayloadType = 'str'
+        }
+      } else if (
+        this.offPayloadType === 'string' ||
+        this.offPayloadType === 'none'
+      ) {
+        this.offPayloadType = 'str'
+      }
+      $('#node-input-offPayloadType').val(this.offPayloadType)
+      $('#node-input-offPayload').typedInput({
+        default: 'str',
+        typeField: $('#node-input-offPayloadType'),
+        types: [
+          //'flow',
+          //'global',
+          'str',
+          'num',
+          'bool',
+          'json',
+          //'bin',
+          //'date',
+          //'env'
+        ],
+      })
+      $('#node-input-offPayload').typedInput('type', this.offPayloadType)
+    },
+    oneditsave: function () {
+      $('#node-input-minDuration').val(calcDuration('min'))
+      $('#node-input-maxDuration').val(calcDuration('max'))
+    },
+  })
+</script>
+<style>
+  .form-row label {
+    width: 120px;
+  }
+</style>
+
+<script type="text/x-red" data-template-name="presence-faker">
+  <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-windowBegin"><i class="fa fa-clock-o"></i> window</label>
+    begin: <input type="text" id="node-input-windowBegin" placeholder="HH:MM" style="width:75px">
+    end: <input type="text" id="node-input-windowEnd" placeholder="HH:MM" style="width:75px">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-minCount">ON times</label>
+    min: <input type="text" id="node-input-minCount" placeholder="" style="width:50px">
+    max: <input type="text" id="node-input-maxCount" placeholder="" style="width:50px">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-minDurationHours">ON min duration</label>
+    <select style="width:50px; margin-left:0px;" id="node-input-minDurationHours">
+      <option value="0">00</option>
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+      <option value="11">11</option>
+      <option value="12">12</option>
+      <option value="13">13</option>
+      <option value="14">14</option>
+      <option value="15">15</option>
+      <option value="16">16</option>
+      <option value="17">17</option>
+      <option value="18">18</option>
+      <option value="19">19</option>
+      <option value="20">20</option>
+      <option value="21">21</option>
+      <option value="22">22</option>
+      <option value="23">23</option>
+    </select>&nbsp;hours
+    <select style="width:50px; margin-left:0px;" id="node-input-minDurationMinutes">
+      <option value="0">00</option>
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+      <option value="25">25</option>
+      <option value="30">30</option>
+      <option value="35">35</option>
+      <option value="40">40</option>
+      <option value="45">45</option>
+      <option value="50">50</option>
+      <option value="55">55</option>
+    </select>&nbsp;minutes
+    <select style="width:50px; margin-left:0px;" id="node-input-minDurationSeconds">
+      <option value="0">00</option>
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+      <option value="25">25</option>
+      <option value="30">30</option>
+      <option value="35">35</option>
+      <option value="40">40</option>
+      <option value="45">45</option>
+      <option value="50">50</option>
+      <option value="55">55</option>
+    </select>&nbsp;seconds
+    <input type="hidden" id="node-input-minDuration">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-maxDurationHours">ON max duration</label>
+    <select style="width:50px; margin-left:0px;" id="node-input-maxDurationHours">
+      <option value="0">00</option>
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+      <option value="11">11</option>
+      <option value="12">12</option>
+      <option value="13">13</option>
+      <option value="14">14</option>
+      <option value="15">15</option>
+      <option value="16">16</option>
+      <option value="17">17</option>
+      <option value="18">18</option>
+      <option value="19">19</option>
+      <option value="20">20</option>
+      <option value="21">21</option>
+      <option value="22">22</option>
+      <option value="23">23</option>
+    </select>&nbsp;hours
+    <select style="width:50px; margin-left:0px;" id="node-input-maxDurationMinutes">
+      <option value="0">00</option>
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+      <option value="25">25</option>
+      <option value="30">30</option>
+      <option value="35">35</option>
+      <option value="40">40</option>
+      <option value="45">45</option>
+      <option value="50">50</option>
+      <option value="55">55</option>
+    </select>&nbsp;minutes
+    <select style="width:50px; margin-left:0px;" id="node-input-maxDurationSeconds">
+      <option value="0">00</option>
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+      <option value="25">25</option>
+      <option value="30">30</option>
+      <option value="35">35</option>
+      <option value="40">40</option>
+      <option value="45">45</option>
+      <option value="50">50</option>
+      <option value="55">55</option>
+    </select>&nbsp;seconds
+    <input type="hidden" id="node-input-maxDuration">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-onPayload"><i class="fa fa-envelope"></i> <span data-i18n="common.label.payload">ON Payload</span></label>
+    <input type="text" id="node-input-onPayload" style="width:70%">
+    <input type="hidden" id="node-input-onPayloadType">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-onTopic"><i class="fa fa-tasks"></i> <span>ON Topic</span></label>
+    <input type="text" id="node-input-onTopic">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-offPayload"><i class="fa fa-envelope"></i> <span data-i18n="common.label.payload">OFF Payload</span></label>
+    <input type="text" id="node-input-offPayload" style="width:70%">
+    <input type="hidden" id="node-input-offPayloadType">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-offTopic"><i class="fa fa-tasks"></i> <span>OFF Topic</span></label>
+    <input type="text" id="node-input-offTopic">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-startupBehavior"><i class="fa fa-power-off"></i> <span>enable</span></label>
+    <select id="node-input-startupBehavior" style="width:70%">
+      <option value="onMsg">when TRUE is received as msg.payload</option>
+      <option value="onStartup">when the flow starts up</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-actionOnDisable"><i class="fa fa-power-off"></i> <span>when disabled</span></label>
+    <select id="node-input-actionOnDisable" style="width:70%">
+      <option value="none">do nothing</option>
+      <option value="on">send ON message</option>
+      <option value="off">send OFF message</option>
+    </select>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="presence-faker">
+      <p>This node can pretend that your home is occupied by switching devices (e.g. lights) on and off at random times.</p>
+      <h3>Inputs</h3>
+        <dl class="message-properties">
+          <dt>payload
+              <span class="property-type">bool</span>
+          </dt>
+        </dl>
+      <h3>Outputs</h3>
+        <dl class="message-properties">
+          <dt>payload
+              <span class="property-type">string | bool | number | obj</span>
+          </dt>
+          <dt>topic
+            <span class="property-type">string</span>
+        </dt>
+        </dl>
+      <h3>Details</h3>
+      <p>
+        By default the node does nothing unless it receives <code>true</code> as an incoming <code>msg.payload</code>,
+        which will activate the node and generate a random schedule of ON / OFF events. Those will be ejected over time as outgoing
+        messages with <code>payload</code> and <code>topic</code> as specified in the node properties.
+      </p>
+      <p>
+        You can also configure the node to start up enabled in order not to require an incoming activation message.
+      <p>
+        Once the node receives a message with <code>msg.payload</code> of <code>false</code> it will get disabled. You can configure
+        whether or not and what kind of message the node should eject in this case.
+      </p>
+      <p>
+        The configuration can also be overwritten at runtime by passing a config object as msg.payload to the presence-faker node.
+        All attributes are optional.
+
+        <pre>
+  {
+      "windowBegin": "00:00",  //string
+      "windowEnd": "23:59:59", //string
+      "minDuration": 60,       //seconds as int
+      "maxDuration": 600,      //seconds as int
+      "minCount": 10,          //int
+      "maxCount": 30           //int
+  }
+        </pre>
+      </p>
+      <p>
+          Enabling / disabling the node would typically be triggered by your home automation system, e.g. based on
+          occupation status of your home, LUX sensors, sunset etc.
+      </p>
+</script>
