@@ -1189,38 +1189,50 @@
 </script>
 
 <script type="text/x-red" data-help-name="suncron">
-  <p>This node triggers configurable outgoing messages based on the position of the sun.</p>
-  <h3>Outputs</h3>
-    <dl class="message-properties">
-      <dt>payload
-          <span class="property-type">string | bool | number | obj</span>
-      </dt>
-      <dt>topic
-        <span class="property-type">string</span>
-      </dt>
-      <dt>schedule
-        <span class="property-type">obj</span>
-      </dt>
-    </dl>
-  <h3>Details</h3>
-  <p>
-    For each significant sun position (e.g. sunrise, noon, dusk etc.) a <code>payload</code> and <code>topic</code> can be
-    specified, which the node will eject as outgoing <code>msg</code> objects.
-  </p>
-  <p>
-    You can also configure a positive or negative offset to adjust each event.
-  </p>
-  <p>
-    Outgoing messages also have a <code>schedule</code> attribute containing an object with details about the
-    schedule of the current date. The schedule contains only events which have been configured with a payload.
-    Offsets are taken into account. The time strings refer to UTC.
-  </p>
-  <pre>
-    {
-        "sunrise": "2019-09-08T06:44:00Z",
-        "sunriseEnd": "2019-09-08T07:18:00Z",
-        "dusk": "2019-09-08T19:20:00Z",
-        ...
+    <p>This node triggers configurable outgoing messages based on the position of the sun.</p>
+    <h3>Outputs</h3>
+      <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">string | bool | number | obj</span>
+        </dt>
+        <dt>topic
+          <span class="property-type">string</span>
+        </dt>
+        <dt>schedule
+          <span class="property-type">obj</span>
+        </dt>
+      </dl>
+    <h3>Details</h3>
+    <p>
+      For each significant sun position (e.g. sunrise, noon, dusk etc.) a <code>payload</code> and <code>topic</code> can be
+      specified, which the node will eject as outgoing <code>msg</code> objects.
+    </p>
+    <p>
+      You can configure a positive or negative offset to adjust each event.
+    </p>
+    <p>
+      Outgoing messages also have a <code>schedule</code> attribute containing an object with details about the
+      schedule of the current date. The schedule contains only events which have been configured with a payload.
+      Offsets are taken into account. The time strings refer to UTC.
+    </p>
+    <pre>
+  {
+    "sunrise": {
+        "event": "sunrise",
+        "sunEventTime": "2019-09-08T06:29:51",
+        "cronTime": "2019-09-08T07:31:51"
+    },
+    "sunriseEnd": {
+        "event": "sunriseEnd",
+        "sunEventTime": "2019-09-08T06:33:24",
+        "cronTime": "2019-09-08T03:33:24"
+    },
+    "dawn": {
+        "event": "dawn",
+        "sunEventTime": "2019-09-08T05:54:49",
+        "cronTime": "2019-09-08T06:54:49"
     }
-          </pre>
+    ...
+  }
+    </pre>
 </script>
