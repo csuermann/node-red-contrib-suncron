@@ -1192,13 +1192,13 @@
     <p>This node triggers configurable outgoing messages based on the position of the sun.</p>
     <h3>Outputs</h3>
       <dl class="message-properties">
-        <dt>payload
+        <dt>msg.payload
             <span class="property-type">string | bool | number | obj</span>
         </dt>
-        <dt>topic
+        <dt>msg.topic
           <span class="property-type">string</span>
         </dt>
-        <dt>schedule
+        <dt>msg.schedule
           <span class="property-type">obj</span>
         </dt>
       </dl>
@@ -1213,7 +1213,7 @@
     <p>
       Outgoing messages also have a <code>schedule</code> attribute containing an object with details about the
       schedule of the current date. The schedule contains only events which have been configured with a payload.
-      Offsets are taken into account. The time strings refer to UTC.
+      Offsets are taken into account.
     </p>
     <pre>
   {
