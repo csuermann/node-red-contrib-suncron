@@ -112,6 +112,7 @@ module.exports = function (RED) {
       }
 
       debug(`${i} msg crons installed`)
+      setNodeStatus(`${i} crons active`)
     }
 
     const installDailyCronjob = function () {
