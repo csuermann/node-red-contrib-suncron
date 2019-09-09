@@ -99,7 +99,13 @@ module.exports = function (RED) {
           cronTime: event.cronTime.toDate(),
           onTick: () => {
             ejectMsg(event, schedule)
-            setNodeStatus(`${event.event} at ${event.cronTime.format('HH:mm')}`)
+            setNodeStatus(
+              `now: ${event.event} @ ${event.cronTime.format('HH:mm')}`,
+              'green'
+            )
+            setTimeout(() => {
+              setNodeStatusToNextEvent(schedule)
+            }, 2000)
           }
         })
 
@@ -113,6 +119,9 @@ module.exports = function (RED) {
 
       debug(`${i} msg crons installed`)
       setNodeStatus(`${i} crons active`)
+      setTimeout(() => {
+        setNodeStatusToNextEvent(schedule)
+      }, 2000)
     }
 
     const installDailyCronjob = function () {
@@ -124,8 +133,9 @@ module.exports = function (RED) {
       const cron = new CronJob({
         cronTime,
         onTick: () => {
-          installMsgCronjobs(calcScheduleForToday())
-          setNodeStatus(`updated for ${dayjs().format('ddd, MMM D')}`)
+          const schedule = calcScheduleForToday()
+          installMsgCronjobs(schedule)
+          setNodeStatusToNextEvent(schedule)
         }
       })
       cron.start()
@@ -144,6 +154,35 @@ module.exports = function (RED) {
         shape: 'dot',
         text: text
       })
+    }
+
+    const setNodeStatusToNextEvent = function (schedule) {
+      function findNextEvent (schedule) {
+        let futureEvents = Object.keys(schedule)
+          .map(eventType => ({
+            eventName: eventType,
+            eventTime: schedule[eventType].cronTime
+          }))
+          .sort((e1, e2) => e1.eventTime.unix() - e2.eventTime.unix())
+          .filter(event => event.eventTime.isAfter(dayjs()))
+
+        if (futureEvents.length > 0) {
+          return futureEvents.shift()
+        } else {
+          throw new Error('done for today')
+        }
+      }
+
+      try {
+        const nextEvent = findNextEvent(schedule)
+        setNodeStatus(
+          `next: ${nextEvent.eventName} @ ${nextEvent.eventTime.format(
+            'HH:mm'
+          )}`
+        )
+      } catch (err) {
+        setNodeStatus(err.message)
+      }
     }
 
     const stopMsgCrons = function () {
@@ -185,9 +224,8 @@ module.exports = function (RED) {
       // on startup:
 
       const schedule = calcScheduleForToday()
-      debug(schedule)
-
       installMsgCronjobs(schedule)
+      debug(schedule)
 
       dailyCron = installDailyCronjob()
     })()

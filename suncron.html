@@ -1210,11 +1210,18 @@
     <p>
       You can configure a positive or negative offset to adjust each event.
     </p>
+    <h3>Schedule</h3>
     <p>
       Outgoing messages also have a <code>schedule</code> attribute containing an object with details about the
       schedule of the current date. The schedule contains only events which have been configured with a payload.
-      Offsets are taken into account.
+      Each event has the following attributes:
+      <ul>
+        <li><code>event</code> is the name of the sun event</li>
+        <li><code>sunEventTime</code> refers to the unadjusted time of the respective sun event.</li>
+        <li><code>cronTime</code> refers to the adjusted time, i.e. taking the offset into account.</li>
+      </ul>
     </p>
+    <h4>Example <code>msg.schedule</code> object</h4>
     <pre>
   {
     "sunrise": {

@@ -1,6 +1,6 @@
 # SunCron
 
-A Node-RED node that can output configurable messages at significant sun events (e.g. sunrise, sunset etc.)
+A Node-RED node that can output configurable messages at significant sun events
 
 ## Supported Sun Events
 
@@ -15,7 +15,7 @@ A Node-RED node that can output configurable messages at significant sun events 
 - Nautical Dusk
 - Night
 - Nadir
-- NightEnd
+- Night End
 - Nautical Dawn
 - Dawn
 
