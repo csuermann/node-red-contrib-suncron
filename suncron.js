@@ -29,12 +29,19 @@ module.exports = function (RED) {
     let dailyCron = []
 
     const calcScheduleForToday = function () {
-      let today = new Date()
-      const midday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0, 0, 0)
-      debug(`calcScheduleForToday():  today=` + today.toISOString())
-      debug(`calcScheduleForToday(): midday=` + midday.toISOString())
-      let sunTimes = SunCalc.getTimes(midday, config.lat, config.lon)
-      
+      const today = new Date()
+      const midday = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        12,
+        0,
+        0,
+        0,
+        0
+      )
+      const sunTimes = SunCalc.getTimes(midday, config.lat, config.lon)
+
       return eventTypes.reduce((result, eventType) => {
         const payload = config[`${eventType}Payload`]
 
@@ -65,7 +72,6 @@ module.exports = function (RED) {
             payloadType,
             topic
           }
-        debug(`event at: ` + cronTime.toISOString())
         }
         return result
       }, {})
