@@ -2,8 +2,8 @@ const CronJob = require('cron').CronJob
 const dayjs = require('dayjs')
 const SunCalc = require('suncalc')
 
-module.exports = function (RED) {
-  function SuncronNode (config) {
+module.exports = function(RED) {
+  function SuncronNode(config) {
     RED.nodes.createNode(this, config)
 
     const node = this
@@ -22,13 +22,13 @@ module.exports = function (RED) {
       'nadir',
       'nightEnd',
       'nauticalDawn',
-      'dawn'
+      'dawn',
     ]
 
     let msgCrons = []
     let dailyCron = []
 
-    const calcScheduleForToday = function () {
+    const calcScheduleForToday = function() {
       const today = new Date()
       const midday = new Date(
         today.getFullYear(),
@@ -70,27 +70,28 @@ module.exports = function (RED) {
             cronTimeLocal: cronTime.format('YYYY-MM-DDTHH:mm:ss'),
             payload,
             payloadType,
-            topic
+            topic,
           }
         }
         return result
       }, {})
     }
 
-    const formatSchedule = function (schedule) {
+    const formatSchedule = function(schedule) {
       let result = {}
       for (let eventType in schedule) {
         let event = schedule[eventType]
         result[eventType] = {
           event: eventType,
           sunEventTime: event.sunEventTimeLocal,
-          cronTime: event.cronTimeLocal
+          cronTime: event.cronTimeLocal,
+          offset: event.offset,
         }
       }
       return result
     }
 
-    const installMsgCronjobs = function (schedule) {
+    const installMsgCronjobs = function(schedule) {
       stopMsgCrons()
 
       let i = 0
@@ -116,7 +117,7 @@ module.exports = function (RED) {
             setTimeout(() => {
               setNodeStatusToNextEvent(schedule)
             }, 2000)
-          }
+          },
         })
 
         try {
@@ -134,7 +135,7 @@ module.exports = function (RED) {
       }, 2000)
     }
 
-    const installDailyCronjob = function () {
+    const installDailyCronjob = function() {
       // run daily cron 5 seconds past midnight (except for debugging: 5 seconds past the full minute)
       const cronTime = RED.settings.suncronMockTimes
         ? '5 * * * * *'
@@ -146,32 +147,32 @@ module.exports = function (RED) {
           const schedule = calcScheduleForToday()
           installMsgCronjobs(schedule)
           setNodeStatusToNextEvent(schedule)
-        }
+        },
       })
       cron.start()
       return cron
     }
 
-    const debug = function (debugMsg) {
+    const debug = function(debugMsg) {
       if (RED.settings.suncronDebug) {
         node.warn(debugMsg)
       }
     }
 
-    const setNodeStatus = function (text, color = 'grey') {
+    const setNodeStatus = function(text, color = 'grey') {
       node.status({
         fill: color,
         shape: 'dot',
-        text: text
+        text: text,
       })
     }
 
-    const setNodeStatusToNextEvent = function (schedule) {
-      function findNextEvent (schedule) {
+    const setNodeStatusToNextEvent = function(schedule) {
+      function findNextEvent(schedule) {
         let futureEvents = Object.keys(schedule)
           .map(eventType => ({
             eventName: eventType,
-            eventTime: schedule[eventType].cronTime
+            eventTime: schedule[eventType].cronTime,
           }))
           .sort((e1, e2) => e1.eventTime.unix() - e2.eventTime.unix())
           .filter(event => event.eventTime.isAfter(dayjs()))
@@ -195,7 +196,7 @@ module.exports = function (RED) {
       }
     }
 
-    const stopMsgCrons = function () {
+    const stopMsgCrons = function() {
       if (msgCrons.length > 0) {
         msgCrons.forEach(cron => {
           cron.stop()
@@ -206,7 +207,7 @@ module.exports = function (RED) {
       }
     }
 
-    const ejectMsg = function ({ payload, payloadType, topic }, schedule) {
+    const ejectMsg = function({ payload, payloadType, topic }, schedule) {
       const castPayload = (payload, payloadType) => {
         if (payloadType === 'num') {
           return Number(payload)
@@ -222,15 +223,15 @@ module.exports = function (RED) {
       node.send({
         topic,
         payload: castPayload(payload, payloadType),
-        schedule: formatSchedule(schedule)
+        schedule: formatSchedule(schedule),
       })
     }
 
-    node.on('close', function () {
+    node.on('close', function() {
       stopMsgCrons()
       dailyCron.stop()
     })
-    ;(function () {
+    ;(function() {
       // on startup:
 
       const schedule = calcScheduleForToday()
