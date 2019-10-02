@@ -1,106 +1,108 @@
 <script type="text/javascript">
-  const calcDuration = eventType => {
-    // eventType can be 'sunset', 'dusk' etc.
-    let hours = Number($(`#node-input-${eventType}OffsetHours`).val())
-    let minutes = Number($(`#node-input-${eventType}OffsetMinutes`).val())
-    return hours * 3600 + minutes * 60
-  }
-
-  const eventTypes = [
-    'sunrise',
-    'sunriseEnd',
-    'goldenHourEnd',
-    'solarNoon',
-    'goldenHour',
-    'sunsetStart',
-    'sunset',
-    'dusk',
-    'nauticalDusk',
-    'night',
-    'nadir',
-    'nightEnd',
-    'nauticalDawn',
-    'dawn',
-  ]
-
-  let defaults = {
-    name: { value: '' },
-    lat: { value: '', required: true, validate: RED.validators.number() },
-    lon: { value: '', required: true, validate: RED.validators.number() },
-  }
-
-  eventTypes.forEach(eventType => {
-    defaults[`${eventType}Payload`] = {
-      value: '',
-      validate: RED.validators.typedInput('payloadType'),
+  ;(function() {
+    const calcDuration = eventType => {
+      // eventType can be 'sunset', 'dusk' etc.
+      let hours = Number($(`#node-input-${eventType}OffsetHours`).val())
+      let minutes = Number($(`#node-input-${eventType}OffsetMinutes`).val())
+      return hours * 3600 + minutes * 60
     }
-    defaults[`${eventType}PayloadType`] = { value: 'string' }
-    defaults[`${eventType}Topic`] = { value: '', required: false }
-    defaults[`${eventType}OffsetType`] = { value: 1, required: true }
-    defaults[`${eventType}OffsetHours`] = { value: 0, required: true }
-    defaults[`${eventType}OffsetMinutes`] = { value: 0, required: true }
-    defaults[`${eventType}Offset`] = { value: 0 }
-  })
 
-  RED.nodes.registerType('suncron', {
-    category: 'input',
-    color: '#FFCC66',
-    defaults: defaults,
-    inputs: 0,
-    outputs: 1,
-    icon: 'font-awesome/fa-sun-o',
-    label: function() {
-      return this.name || 'suncron'
-    },
-    oneditprepare: function() {
-      $('#geolocate').click(() => {
-        if ('geolocation' in navigator) {
-          $('#node-input-lat').val('???')
-          $('#node-input-lon').val('???')
-          $('#geolocate > i').removeClass('fa-location-arrow')
-          $('#geolocate > i').addClass('fa-hourglass')
-          navigator.geolocation.getCurrentPosition(position => {
-            $('#node-input-lat').val(position.coords.latitude)
-            $('#node-input-lon').val(position.coords.longitude)
-            $('#geolocate > i').removeClass('fa-hourglass')
-            $('#geolocate > i').addClass('fa-location-arrow')
-          })
-        } else {
-          alert('Sorry, your browser does not support geolocation')
-        }
-      })
+    const eventTypes = [
+      'sunrise',
+      'sunriseEnd',
+      'goldenHourEnd',
+      'solarNoon',
+      'goldenHour',
+      'sunsetStart',
+      'sunset',
+      'dusk',
+      'nauticalDusk',
+      'night',
+      'nadir',
+      'nightEnd',
+      'nauticalDawn',
+      'dawn',
+    ]
 
-      eventTypes.forEach(eventType => {
-        const payloadName = `${eventType}Payload`
-        const payloadType = `${eventType}PayloadType`
+    let defaults = {
+      name: { value: '' },
+      lat: { value: '', required: true, validate: RED.validators.number() },
+      lon: { value: '', required: true, validate: RED.validators.number() },
+    }
 
-        if (this[payloadType] == null) {
-          if (this[payloadType] == '') {
-            this[payloadType] = 'date'
+    eventTypes.forEach(eventType => {
+      defaults[`${eventType}Payload`] = {
+        value: '',
+        validate: RED.validators.typedInput('payloadType'),
+      }
+      defaults[`${eventType}PayloadType`] = { value: 'string' }
+      defaults[`${eventType}Topic`] = { value: '', required: false }
+      defaults[`${eventType}OffsetType`] = { value: 1, required: true }
+      defaults[`${eventType}OffsetHours`] = { value: 0, required: true }
+      defaults[`${eventType}OffsetMinutes`] = { value: 0, required: true }
+      defaults[`${eventType}Offset`] = { value: 0 }
+    })
+
+    RED.nodes.registerType('suncron', {
+      category: 'smart home',
+      color: '#FFCC66',
+      defaults: defaults,
+      inputs: 0,
+      outputs: 1,
+      icon: 'font-awesome/fa-sun-o',
+      label: function() {
+        return this.name || 'suncron'
+      },
+      oneditprepare: function() {
+        $('#geolocate').click(() => {
+          if ('geolocation' in navigator) {
+            $('#node-input-lat').val('???')
+            $('#node-input-lon').val('???')
+            $('#geolocate > i').removeClass('fa-location-arrow')
+            $('#geolocate > i').addClass('fa-hourglass')
+            navigator.geolocation.getCurrentPosition(position => {
+              $('#node-input-lat').val(position.coords.latitude)
+              $('#node-input-lon').val(position.coords.longitude)
+              $('#geolocate > i').removeClass('fa-hourglass')
+              $('#geolocate > i').addClass('fa-location-arrow')
+            })
           } else {
+            alert('Sorry, your browser does not support geolocation')
+          }
+        })
+
+        eventTypes.forEach(eventType => {
+          const payloadName = `${eventType}Payload`
+          const payloadType = `${eventType}PayloadType`
+
+          if (this[payloadType] == null) {
+            if (this[payloadType] == '') {
+              this[payloadType] = 'date'
+            } else {
+              this[payloadType] = 'str'
+            }
+          } else if (
+            this[payloadType] === 'string' ||
+            this[payloadType] === 'none'
+          ) {
             this[payloadType] = 'str'
           }
-        } else if (
-          this[payloadType] === 'string' ||
-          this[payloadType] === 'none'
-        ) {
-          this[payloadType] = 'str'
-        }
-        $(`#node-input-${payloadType}`).val(this[payloadType])
-        $(`#node-input-${payloadName}`).typedInput({
-          default: 'str',
-          typeField: $(`#node-input-${payloadType}`),
-          types: ['str', 'num', 'bool', 'json'],
+          $(`#node-input-${payloadType}`).val(this[payloadType])
+          $(`#node-input-${payloadName}`).typedInput({
+            default: 'str',
+            typeField: $(`#node-input-${payloadType}`),
+            types: ['str', 'num', 'bool', 'json'],
+          })
+          $(`#node-input-${payloadName}`).typedInput('type', this[payloadType])
         })
-        $(`#node-input-${payloadName}`).typedInput('type', this[payloadType])
-      })
-    },
-    oneditsave: function() {
-      eventTypes.forEach(eventType => {
-        $(`#node-input-${eventType}Offset`).val(calcDuration(eventType))
-      })
-    },
-  })
+      },
+      oneditsave: function() {
+        eventTypes.forEach(eventType => {
+          $(`#node-input-${eventType}Offset`).val(calcDuration(eventType))
+        })
+      },
+    })
+  })()
 </script>
 <style>
   .form-row label {
