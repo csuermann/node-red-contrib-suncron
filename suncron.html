@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  ;(function() {
+  ; (function () {
     const calcDuration = eventType => {
       // eventType can be 'sunset', 'dusk' etc.
       let hours = Number($(`#node-input-${eventType}OffsetHours`).val())
@@ -26,6 +26,7 @@
 
     let defaults = {
       name: { value: '' },
+      replay: { value: '0' },
       lat: { value: '', required: true, validate: RED.validators.number() },
       lon: { value: '', required: true, validate: RED.validators.number() },
     }
@@ -50,10 +51,10 @@
       inputs: 0,
       outputs: 1,
       icon: 'font-awesome/fa-sun-o',
-      label: function() {
+      label: function () {
         return this.name || 'suncron'
       },
-      oneditprepare: function() {
+      oneditprepare: function () {
         $('#geolocate').click(() => {
           if ('geolocation' in navigator) {
             $('#node-input-lat').val('???')
@@ -96,7 +97,7 @@
           $(`#node-input-${payloadName}`).typedInput('type', this[payloadType])
         })
       },
-      oneditsave: function() {
+      oneditsave: function () {
         eventTypes.forEach(eventType => {
           $(`#node-input-${eventType}Offset`).val(calcDuration(eventType))
         })
@@ -117,10 +118,15 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-lat"><i class="fa fa-globe"></i> location</label>
+    <label for="node-input-lat"><i class="fa fa-globe"></i> Location</label>
     lat: <input type="text" id="node-input-lat" placeholder="latitude" style="width:100px">
     lon: <input type="text" id="node-input-lon" placeholder="longitude" style="width:100px">
     <button id="geolocate"><i class="fa fa-location-arrow"></i></button>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-replay"><i class="fa fa-repeat"></i> Startup</label>
+    <input type="checkbox" value="1" id="node-input-replay" style="width:30px; margin:0px"> Replay most recent passed event on startup
   </div>
 
   <hr />

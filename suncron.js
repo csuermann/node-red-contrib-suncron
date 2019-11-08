@@ -196,6 +196,19 @@ module.exports = function(RED) {
       }
     }
 
+    const findMostRecentEvent = function(schedule) {
+      let pastEvents = Object.keys(schedule)
+        .map(eventType => schedule[eventType])
+        .sort((e1, e2) => e2.cronTime.unix() - e1.cronTime.unix())
+        .filter(event => event.cronTime.isBefore(dayjs()))
+
+      if (pastEvents.length > 0) {
+        return pastEvents.shift()
+      } else {
+        throw new Error('no past events')
+      }
+    }
+
     const stopMsgCrons = function() {
       if (msgCrons.length > 0) {
         msgCrons.forEach(cron => {
@@ -235,6 +248,19 @@ module.exports = function(RED) {
       // on startup:
 
       const schedule = calcScheduleForToday()
+
+      if (config.replay === true) {
+        try {
+          const mostRecentEvent = findMostRecentEvent(schedule)
+
+          setTimeout(() => {
+            ejectMsg(mostRecentEvent, schedule)
+          }, 500)
+        } catch (e) {
+          debug(e)
+        }
+      }
+
       installMsgCronjobs(schedule)
       debug(schedule)
 
