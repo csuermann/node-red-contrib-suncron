@@ -1,5 +1,5 @@
 <script type="text/javascript">
-  ; (function () {
+  ;(function() {
     const calcDuration = eventType => {
       // eventType can be 'sunset', 'dusk' etc.
       let hours = Number($(`#node-input-${eventType}OffsetHours`).val())
@@ -48,13 +48,13 @@
       category: 'smart home',
       color: '#FFCC66',
       defaults: defaults,
-      inputs: 0,
+      inputs: 1,
       outputs: 1,
       icon: 'font-awesome/fa-sun-o',
-      label: function () {
+      label: function() {
         return this.name || 'suncron'
       },
-      oneditprepare: function () {
+      oneditprepare: function() {
         $('#geolocate').click(() => {
           if ('geolocation' in navigator) {
             $('#node-input-lat').val('???')
@@ -97,7 +97,7 @@
           $(`#node-input-${payloadName}`).typedInput('type', this[payloadType])
         })
       },
-      oneditsave: function () {
+      oneditsave: function() {
         eventTypes.forEach(eventType => {
           $(`#node-input-${eventType}Offset`).val(calcDuration(eventType))
         })
