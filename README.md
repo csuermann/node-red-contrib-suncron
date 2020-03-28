@@ -27,7 +27,7 @@ The location (lat / lon) can either be entered manually or retrieved automatical
 
 ![example](docs/config.png)
 
-The offsets can be overwritten at runtime by passing a config object as `msg.payload` to the suncron node. All attributes are optional. Offsets need to be expressed in seconds as positive or negative integer values. Below example adjusts the offset for the `dusk` event to -2 minutes and all others to 0 seconds.
+The offsets can be overwritten at runtime by passing a config object as `msg.payload` to the suncron node. All attributes are optional. Offsets need to be expressed in seconds as positive or negative integer values. Below example adjusts the offset for the `dusk` event to -2 minutes (-120 seconds) and all others to 0 seconds.
 
 ```
 {
