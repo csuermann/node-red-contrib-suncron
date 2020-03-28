@@ -23,7 +23,7 @@ A Node-RED node that can output configurable messages at significant sun events
 
 For each of the above sun events a distinct `msg.payload` and `msg.topic` can be configured. It is also possible to specify an offset to adjust the event time.
 
-The location (lat / lon) can either be entered manually or retrieved automatically from the browser via the location button.
+The location (lat / lon) can either be entered manually or retrieved automatically from your browser via the location button.
 
 ![example](docs/config.png)
 
