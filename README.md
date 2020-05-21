@@ -50,7 +50,9 @@ The offsets can be overwritten at runtime by passing a config object as `msg.pay
 
 ## Outgoing messages
 
-The node will eject messages at the specified times (respecting offsets), which will have a `msg.payload` and `msg.topic` as configured in the editor. Outgoing messages also have a `schedule` attribute containing an object with details about the schedule of the current date. The schedule contains only events which have been configured with a payload.
+### Sun events
+
+The node will emit messages at the specified sun events (respecting offsets), which will have a `msg.payload` and `msg.topic` as configured in the editor. Those messages also have a `schedule` attribute containing an object with details about the schedule of the current date. The schedule contains only events which have been configured with a payload.
 
 Each event has the following attributes:
 
@@ -59,7 +61,7 @@ Each event has the following attributes:
 - `cronTime` refers to the adjusted time, i.e. taking the offset into account.
 - `offset` referst to the configured offset in seconds.
 
-### Example `msg.schedule` object
+#### Example `msg.schedule` object
 
 ```javascript
 {
@@ -84,6 +86,10 @@ Each event has the following attributes:
   //...
 }
 ```
+
+### Schedule events
+
+If the checkbox "Emit schedule when updated" is ticked, the node will emit additional messages whenever the schedule gets updated. This happens on startup, when offsets are overridden at runtime, and shortly after midnight. Those messages will contain the schedule object as `msg.payload` (same structure as above) and the string "suncron:schedule" as `msg.topic`.
 
 ## Contributions and Suggestions
 

@@ -30,14 +30,14 @@
     }
   },
   "dependencies": {
-    "cron": "^1.7.2",
-    "dayjs": "^1.8.17",
+    "cron": "^1.8.2",
+    "dayjs": "^1.8.27",
     "suncalc": "^1.8.0"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
-    "mocha": "^6.2.2",
-    "node-red": "^1.0.2",
+    "eslint": "^7.0.0",
+    "mocha": "^7.1.2",
+    "node-red": "^1.0.6",
     "node-red-node-test-helper": "^0.2.3"
   },
   "prettier": {

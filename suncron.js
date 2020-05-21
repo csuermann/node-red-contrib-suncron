@@ -44,6 +44,9 @@ module.exports = function (RED) {
       }
 
       installMsgCronjobs(schedule)
+      setTimeout(() => {
+        ejectSchedule(schedule)
+      }, 500)
       debug(schedule)
 
       dailyCron = installDailyCronjob()
@@ -167,6 +170,7 @@ module.exports = function (RED) {
         onTick: () => {
           const schedule = calcScheduleForToday()
           installMsgCronjobs(schedule)
+          ejectSchedule(schedule)
           setNodeStatusToNextEvent(schedule)
         },
       })
@@ -258,6 +262,16 @@ module.exports = function (RED) {
         topic,
         payload: castPayload(payload, payloadType),
         schedule: formatSchedule(schedule),
+      })
+    }
+
+    const ejectSchedule = function (schedule) {
+      if (!config.ejectScheduleOnUpdate) {
+        return
+      }
+      node.send({
+        topic: 'suncron:schedule',
+        payload: formatSchedule(schedule),
       })
     }
 

@@ -1,6 +1,6 @@
 <script type="text/javascript">
-  ;(function() {
-    const calcDuration = eventType => {
+  ;(function () {
+    const calcDuration = (eventType) => {
       // eventType can be 'sunset', 'dusk' etc.
       let hours = Number($(`#node-input-${eventType}OffsetHours`).val())
       let minutes = Number($(`#node-input-${eventType}OffsetMinutes`).val())
@@ -26,12 +26,13 @@
 
     let defaults = {
       name: { value: '' },
-      replay: { value: '0' },
       lat: { value: '', required: true, validate: RED.validators.number() },
       lon: { value: '', required: true, validate: RED.validators.number() },
+      replay: { value: false },
+      ejectScheduleOnUpdate: { value: false },
     }
 
-    eventTypes.forEach(eventType => {
+    eventTypes.forEach((eventType) => {
       defaults[`${eventType}Payload`] = {
         value: '',
         validate: RED.validators.typedInput('payloadType'),
@@ -51,17 +52,17 @@
       inputs: 1,
       outputs: 1,
       icon: 'font-awesome/fa-sun-o',
-      label: function() {
+      label: function () {
         return this.name || 'suncron'
       },
-      oneditprepare: function() {
+      oneditprepare: function () {
         $('#geolocate').click(() => {
           if ('geolocation' in navigator) {
             $('#node-input-lat').val('???')
             $('#node-input-lon').val('???')
             $('#geolocate > i').removeClass('fa-location-arrow')
             $('#geolocate > i').addClass('fa-hourglass')
-            navigator.geolocation.getCurrentPosition(position => {
+            navigator.geolocation.getCurrentPosition((position) => {
               $('#node-input-lat').val(position.coords.latitude)
               $('#node-input-lon').val(position.coords.longitude)
               $('#geolocate > i').removeClass('fa-hourglass')
@@ -72,7 +73,7 @@
           }
         })
 
-        eventTypes.forEach(eventType => {
+        eventTypes.forEach((eventType) => {
           const payloadName = `${eventType}Payload`
           const payloadType = `${eventType}PayloadType`
 
@@ -97,8 +98,8 @@
           $(`#node-input-${payloadName}`).typedInput('type', this[payloadType])
         })
       },
-      oneditsave: function() {
-        eventTypes.forEach(eventType => {
+      oneditsave: function () {
+        eventTypes.forEach((eventType) => {
           $(`#node-input-${eventType}Offset`).val(calcDuration(eventType))
         })
       },
@@ -106,8 +107,13 @@
   })()
 </script>
 <style>
-  .form-row label {
+  /* .form-row label {
     width: 120px;
+  } */
+  .form-tips {
+    margin-left: 100px;
+    max-width: 600px !important;
+    width: 68%;
   }
 </style>
 
@@ -125,8 +131,13 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-replay"><i class="fa fa-repeat"></i> Startup</label>
-    <input type="checkbox" value="1" id="node-input-replay" style="width:30px; margin:0px"> Emit preceding event on startup
+    <label for="node-input-replay"><i class="fa fa-rocket"></i> Startup</label>
+    <input type="checkbox" id="node-input-replay" style="width:30px; margin:0px"> Emit preceding event on startup
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-ejectScheduleOnUpdate"><i class="fa fa-repeat"></i> Schedule</label>
+    <input type="checkbox" id="node-input-ejectScheduleOnUpdate" style="width:30px; margin:0px"> Emit schedule when updated <i class="fa fa-info-circle" title="When enabled, this will emit a message with the topic &quot;suncron:schedule&quot; and the schedule object as payload"></i>
   </div>
 
   <hr />
@@ -1197,8 +1208,8 @@
 </script>
 
 <script type="text/x-red" data-help-name="suncron">
-    <p>This node triggers configurable outgoing messages based on the position of the sun.</p>
-    <h3>Outputs</h3>
+    <p>This node emits configurable outgoing messages based on the position of the sun.</p>
+    <h3>Sun event outputs</h3>
       <dl class="message-properties">
         <dt>msg.payload
             <span class="property-type">string | bool | number | obj</span>
@@ -1210,17 +1221,17 @@
           <span class="property-type">obj</span>
         </dt>
       </dl>
-    <h3>Details</h3>
+    <h4>Details</h4>
     <p>
-      For each significant sun position (e.g. sunrise, noon, dusk etc.) a <code>payload</code> and <code>topic</code> can be
-      specified, which the node will eject as outgoing <code>msg</code> objects.
+      For each significant sun event (e.g. sunrise, noon, dusk etc.) a <code>payload</code> and <code>topic</code> can be
+      specified, which the node will emit as outgoing <code>msg</code> objects.
     </p>
     <p>
       You can configure a positive or negative offset to adjust each event.
     </p>
-    <h3>Schedule</h3>
+    <h4>Schedule</h4>
     <p>
-      Outgoing messages also have a <code>schedule</code> attribute containing an object with details about the
+      Those messages also have a <code>schedule</code> attribute containing an object with details about the
       schedule of the current date. The schedule contains only events which have been configured with a payload.
       Each event has the following attributes:
       <ul>
@@ -1229,7 +1240,7 @@
         <li><code>cronTime</code> refers to the adjusted time, i.e. taking the offset into account.</li>
       </ul>
     </p>
-    <h4>Example <code>msg.schedule</code> object</h4>
+    <h5>Example <code>msg.schedule</code> object</h5>
     <pre>
   {
     "sunrise": {
@@ -1250,4 +1261,19 @@
     ...
   }
     </pre>
+    <h3>Schedule event outputs</h3>
+    <p>
+      If the checkbox &quot;Emit schedule when updated&quot; is ticked, the node will emit additional messages whenever
+      the schedule gets updated. This happens on startup, when offsets are overridden at runtime, and shortly
+      after midnight. Those messages will contain the schedule object as <code>msg.payload</code> (same structure as above)
+      and the string &quot;suncron:schedule&quot; as <code>msg.topic</code>.
+    </p>
+    <dl class="message-properties">
+      <dt>msg.payload
+          <span class="property-type">obj</span>
+      </dt>
+      <dt>msg.topic
+        <span class="property-type">&quot;suncron:schedule&quot;</span>
+      </dt>
+    </dl>
 </script>
