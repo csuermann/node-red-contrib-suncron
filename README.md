@@ -91,6 +91,10 @@ Each event has the following attributes:
 
 If the checkbox "Emit schedule when updated" is ticked, the node will emit additional messages whenever the schedule gets updated. This happens on startup, when offsets are overridden at runtime, and shortly after midnight. Those messages will contain the schedule object as `msg.payload` (same structure as above) and the string "suncron:schedule" as `msg.topic`.
 
+## Known issues
+
+Depending on your configured location (lat / lon) and time of the year, you might notice some sun events not being triggered. This is not an error but how lighting works on earth. For example in polar regions, they sometimes have day (or night) for weeks at a time. But even in Berlin / Germany there might not always be a distinct 'night' event as the sun during summer does not go below the astronomical twilight treshold.
+
 ## Contributions and Suggestions
 
 ... are always welcome! Just file a GitHub [issue](https://github.com/csuermann/node-red-contrib-suncron/issues) or [pull request](https://github.com/csuermann/node-red-contrib-suncron/pulls)!

@@ -84,17 +84,24 @@ module.exports = function (RED) {
             cronTime = dayjs(sunEventTime).subtract(offsetSec, 'second')
           }
 
-          result[eventType] = {
-            event: eventType,
-            sunEventTimeUTC: sunEventTime.toISOString(),
-            sunEventTimeLocal: sunEventTime.format('YYYY-MM-DDTHH:mm:ss'),
-            offset: offsetSec * offsetType,
-            cronTime,
-            cronTimeUTC: cronTime.toISOString(),
-            cronTimeLocal: cronTime.format('YYYY-MM-DDTHH:mm:ss'),
-            payload,
-            payloadType,
-            topic,
+          try {
+            result[eventType] = {
+              event: eventType,
+              sunEventTimeUTC: sunEventTime.toISOString(),
+              sunEventTimeLocal: sunEventTime.format('YYYY-MM-DDTHH:mm:ss'),
+              offset: offsetSec * offsetType,
+              cronTime,
+              cronTimeUTC: cronTime.toISOString(),
+              cronTimeLocal: cronTime.format('YYYY-MM-DDTHH:mm:ss'),
+              payload,
+              payloadType,
+              topic,
+            }
+          } catch (e) {
+            console.log(
+              `ignoring event type '${eventType}' as no event time could be determined for current day.`,
+              e
+            )
           }
         }
         return result
@@ -312,7 +319,11 @@ module.exports = function (RED) {
     })
     ;(function () {
       // on startup:
-      letsGo()
+      try {
+        letsGo()
+      } catch (e) {
+        console.log(e)
+      }
     })()
   }
 
