@@ -3,10 +3,12 @@ const dayjs = require('dayjs')
 const SunCalc = require('suncalc')
 
 module.exports = function (RED) {
-  function SuncronNode (config) {
+  function SuncronNode(config) {
     RED.nodes.createNode(this, config)
 
     const node = this
+
+    let schedule
 
     const eventTypes = [
       'sunrise',
@@ -29,7 +31,7 @@ module.exports = function (RED) {
     let dailyCron = []
 
     const letsGo = function () {
-      const schedule = calcScheduleForToday()
+      schedule = calcScheduleForToday()
 
       if (config.replay === true) {
         try {
@@ -175,7 +177,7 @@ module.exports = function (RED) {
       const cron = new CronJob({
         cronTime,
         onTick: () => {
-          const schedule = calcScheduleForToday()
+          schedule = calcScheduleForToday()
           installMsgCronjobs(schedule)
           ejectSchedule(schedule)
           setNodeStatusToNextEvent(schedule)
@@ -200,14 +202,14 @@ module.exports = function (RED) {
     }
 
     const setNodeStatusToNextEvent = function (schedule) {
-      function findNextEvent (schedule) {
+      function findNextEvent(schedule) {
         let futureEvents = Object.keys(schedule)
-          .map(eventType => ({
+          .map((eventType) => ({
             eventName: eventType,
             eventTime: schedule[eventType].cronTime,
           }))
           .sort((e1, e2) => e1.eventTime.unix() - e2.eventTime.unix())
-          .filter(event => event.eventTime.isAfter(dayjs()))
+          .filter((event) => event.eventTime.isAfter(dayjs()))
 
         if (futureEvents.length > 0) {
           return futureEvents.shift()
@@ -230,9 +232,9 @@ module.exports = function (RED) {
 
     const findMostRecentEvent = function (schedule) {
       let pastEvents = Object.keys(schedule)
-        .map(eventType => schedule[eventType])
+        .map((eventType) => schedule[eventType])
         .sort((e1, e2) => e2.cronTime.unix() - e1.cronTime.unix())
-        .filter(event => event.cronTime.isBefore(dayjs()))
+        .filter((event) => event.cronTime.isBefore(dayjs()))
 
       if (pastEvents.length > 0) {
         return pastEvents.shift()
@@ -243,7 +245,7 @@ module.exports = function (RED) {
 
     const stopMsgCrons = function () {
       if (msgCrons.length > 0) {
-        msgCrons.forEach(cron => {
+        msgCrons.forEach((cron) => {
           cron.stop()
         })
 
@@ -291,9 +293,9 @@ module.exports = function (RED) {
       if (typeof msg.payload === 'object') {
         // config object received as msg.payload
         debug(`!!!! CONFIG OBJECT RECEIVED !!!`)
-        // ebug(msg.payload)
+        // debug(msg.payload)
 
-        eventTypes.forEach(eventType => {
+        eventTypes.forEach((eventType) => {
           if (
             msg.payload.hasOwnProperty(eventType) &&
             Number.isInteger(msg.payload[eventType])
@@ -306,6 +308,13 @@ module.exports = function (RED) {
         })
 
         letsGo()
+      } else {
+        try {
+          const mostRecentEvent = findMostRecentEvent(schedule)
+          ejectMsg(mostRecentEvent, schedule)
+        } catch (e) {
+          debug(e)
+        }
       }
 
       if (done) {

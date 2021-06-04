@@ -29,7 +29,7 @@ The location (lat / lon) can either be entered manually or retrieved automatical
 
 The offsets can be overwritten at runtime by passing a config object as `msg.payload` to the suncron node. All attributes are optional. Offsets need to be expressed in seconds as positive or negative integer values. Below example adjusts the offset for the `dusk` event to -2 minutes (-120 seconds) and all others to 0 seconds.
 
-```
+```javascript
 {
     "sunrise": 0,
     "sunriseEnd": 0,
@@ -52,7 +52,7 @@ The offsets can be overwritten at runtime by passing a config object as `msg.pay
 
 ### Sun events
 
-The node will emit messages at the specified sun events (respecting offsets), which will have a `msg.payload` and `msg.topic` as configured in the editor. Those messages also have a `schedule` attribute containing an object with details about the schedule of the current date. The schedule contains only events which have been configured with a payload.
+The node will emit messages at the specified sun events (respecting offsets) or when it receives an inbound msg with a non-object paylod, e.g. `true`. Outbound messages will have a `msg.payload` and `msg.topic` as configured in the editor. Those messages also have a `schedule` attribute containing an object with details about the schedule of the current date. The schedule contains only events which have been configured with a payload.
 
 Each event has the following attributes:
 
