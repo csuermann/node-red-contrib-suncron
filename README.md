@@ -59,7 +59,7 @@ Each event has the following attributes:
 - `event` is the name of the sun event
 - `sunEventTime` refers to the unadjusted time of the respective sun event.
 - `cronTime` refers to the adjusted time, i.e. taking the offset into account.
-- `offset` referst to the configured offset in seconds.
+- `offset` refers to the configured offset in seconds.
 
 #### Example `msg.schedule` object
 
