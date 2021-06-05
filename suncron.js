@@ -101,8 +101,7 @@ module.exports = function (RED) {
             }
           } catch (e) {
             console.log(
-              `ignoring event type '${eventType}' as no event time could be determined for current day.`,
-              e
+              `ignoring event type '${eventType}' as no event time could be determined for current day.`
             )
           }
         }
