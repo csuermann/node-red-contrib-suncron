@@ -266,13 +266,11 @@ module.exports = function (RED) {
         }
       }
 
+      let formatedSchedule = formatSchedule(schedule)
       let next
 
       try {
-        nextEvent = findNextEvent(schedule)
-        console.log('schedule', schedule)
-        console.log('nextEvent', nextEvent)
-        next = schedule[nextEvent.eventName]
+        next = formatedSchedule[findNextEvent(schedule).eventName]
       } catch (e) {
         next = null
       }
@@ -280,7 +278,7 @@ module.exports = function (RED) {
       node.send({
         topic,
         payload: castPayload(payload, payloadType),
-        schedule: formatSchedule(schedule),
+        schedule: formatedSchedule,
         next,
       })
     }
