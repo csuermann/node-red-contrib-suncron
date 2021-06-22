@@ -1215,18 +1215,21 @@
         <dt>msg.schedule
           <span class="property-type">obj</span>
         </dt>
+        <dt>msg.next
+          <span class="property-type">string</span>
+        </dt>
       </dl>
     <h4>Details</h4>
     <p>
-      For each significant sun event (e.g. sunrise, noon, dusk etc.) a <code>payload</code> and <code>topic</code> can be
-      specified, which the node will emit as outgoing <code>msg</code> objects.
+      For each significant sun event (e.g. sunrise, noon, dusk etc.) a <code>msg.payload</code> and <code>msg.topic</code> can be
+      specified which the node will emit once the event fires.
     </p>
     <p>
       You can configure a positive or negative offset to adjust each event.
     </p>
     <h4>Schedule</h4>
     <p>
-      Those messages also have a <code>schedule</code> attribute containing an object with details about the
+      The <code>msg.schedule</code> attribute contains an object with details about the
       schedule of the current date. The schedule contains only events which have been configured with a payload.
       Each event has the following attributes:
       <ul>
@@ -1256,6 +1259,10 @@
     ...
   }
     </pre>
+    <h4>Next</h4>
+    <p>
+      The <code>msg.next</code> attribute contains a string hinting at the next upcoming event, e.g. &quot;sunsetStart @ 21:29&quot;
+    </p>
     <h3>Schedule event outputs</h3>
     <p>
       If the checkbox &quot;Emit schedule when updated&quot; is ticked, the node will emit additional messages whenever

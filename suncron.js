@@ -123,6 +123,22 @@ module.exports = function (RED) {
       return result
     }
 
+    function findNextEvent(schedule) {
+      let futureEvents = Object.keys(schedule)
+        .map((eventType) => ({
+          eventName: eventType,
+          eventTime: schedule[eventType].cronTime,
+        }))
+        .sort((e1, e2) => e1.eventTime.unix() - e2.eventTime.unix())
+        .filter((event) => event.eventTime.isAfter(dayjs()))
+
+      if (futureEvents.length > 0) {
+        return futureEvents.shift()
+      } else {
+        throw new Error('done for today')
+      }
+    }
+
     const installMsgCronjobs = function (schedule) {
       stopMsgCrons()
 
@@ -201,22 +217,6 @@ module.exports = function (RED) {
     }
 
     const setNodeStatusToNextEvent = function (schedule) {
-      function findNextEvent(schedule) {
-        let futureEvents = Object.keys(schedule)
-          .map((eventType) => ({
-            eventName: eventType,
-            eventTime: schedule[eventType].cronTime,
-          }))
-          .sort((e1, e2) => e1.eventTime.unix() - e2.eventTime.unix())
-          .filter((event) => event.eventTime.isAfter(dayjs()))
-
-        if (futureEvents.length > 0) {
-          return futureEvents.shift()
-        } else {
-          throw new Error('done for today')
-        }
-      }
-
       try {
         const nextEvent = findNextEvent(schedule)
         setNodeStatus(
@@ -266,10 +266,19 @@ module.exports = function (RED) {
         }
       }
 
+      let nextEvent
+
+      try {
+        nextEvent = findNextEvent(schedule)
+      } catch (e) {
+        nextEvent = e.message
+      }
+
       node.send({
         topic,
         payload: castPayload(payload, payloadType),
         schedule: formatSchedule(schedule),
+        next: `${nextEvent.eventName} @ ${nextEvent.eventTime.format('HH:mm')}`,
       })
     }
 
