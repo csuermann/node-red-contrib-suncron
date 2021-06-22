@@ -266,19 +266,22 @@ module.exports = function (RED) {
         }
       }
 
-      let nextEvent
+      let next
 
       try {
         nextEvent = findNextEvent(schedule)
+        console.log('schedule', schedule)
+        console.log('nextEvent', nextEvent)
+        next = schedule[nextEvent.eventName]
       } catch (e) {
-        nextEvent = e.message
+        next = null
       }
 
       node.send({
         topic,
         payload: castPayload(payload, payloadType),
         schedule: formatSchedule(schedule),
-        next: `${nextEvent.eventName} @ ${nextEvent.eventTime.format('HH:mm')}`,
+        next,
       })
     }
 
