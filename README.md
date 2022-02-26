@@ -67,20 +67,20 @@ Each event has the following attributes:
 {
   "sunrise": {
       "event": "sunrise",
-      "sunEventTime": "2019-09-08T06:29:51",
-      "cronTime": "2019-09-08T07:31:51",
+      "sunEventTime": "2022-02-26T06:29:51",
+      "cronTime": "2021-02-26T06:29:51",
       "offset": 0
   },
   "sunriseEnd": {
       "event": "sunriseEnd",
-      "sunEventTime": "2019-09-08T06:33:24",
-      "cronTime": "2019-09-08T03:33:24",
+      "sunEventTime": "2022-02-26T06:33:24",
+      "cronTime": "2022-02-26T07:33:24",
       "offset": 3600
   },
   "dawn": {
       "event": "dawn",
-      "sunEventTime": "2019-09-08T05:54:49",
-      "cronTime": "2019-09-08T06:54:49",
+      "sunEventTime": "20221-02-26T05:54:49",
+      "cronTime": "2022-02-26T05:44:49",
       "offset": -600
   }
   //...
