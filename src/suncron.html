@@ -28,8 +28,6 @@
       name: { value: '' },
       lat: { value: '', required: true, validate: RED.validators.number() },
       lon: { value: '', required: true, validate: RED.validators.number() },
-      replay: { value: false },
-      ejectScheduleOnUpdate: { value: false },
     }
 
     eventTypes.forEach((eventType) => {
@@ -49,7 +47,7 @@
       category: 'smart home',
       color: '#FFCC66',
       defaults: defaults,
-      inputs: 1,
+      inputs: 0,
       outputs: 1,
       icon: 'font-awesome/fa-sun-o',
       label: function () {
@@ -123,16 +121,6 @@
     lat: <input type="text" id="node-input-lat" placeholder="latitude" style="width:100px">
     lon: <input type="text" id="node-input-lon" placeholder="longitude" style="width:100px">
     <button id="geolocate"><i class="fa fa-location-arrow"></i></button>
-  </div>
-
-  <div class="form-row">
-    <label for="node-input-replay"><i class="fa fa-rocket"></i> Startup</label>
-    <input type="checkbox" id="node-input-replay" style="width:30px; margin:0px"> Emit preceding event on startup
-  </div>
-
-  <div class="form-row">
-    <label for="node-input-ejectScheduleOnUpdate"><i class="fa fa-repeat"></i> Schedule</label>
-    <input type="checkbox" id="node-input-ejectScheduleOnUpdate" style="width:30px; margin:0px"> Emit schedule when updated <i class="fa fa-info-circle" title="When enabled, this will emit a message with the topic &quot;suncron:schedule&quot; and the schedule object as payload"></i>
   </div>
 
   <hr />

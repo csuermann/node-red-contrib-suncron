@@ -33,22 +33,7 @@ module.exports = function (RED) {
     const letsGo = function () {
       schedule = calcScheduleForToday()
 
-      if (config.replay === true) {
-        try {
-          const mostRecentEvent = findMostRecentEvent(schedule)
-
-          setTimeout(() => {
-            ejectMsg(mostRecentEvent, schedule)
-          }, 500)
-        } catch (e) {
-          debug(e)
-        }
-      }
-
       installMsgCronjobs(schedule)
-      setTimeout(() => {
-        ejectSchedule(schedule)
-      }, 500)
       debug(schedule)
 
       dailyCron = installDailyCronjob()
@@ -194,7 +179,6 @@ module.exports = function (RED) {
         onTick: () => {
           schedule = calcScheduleForToday()
           installMsgCronjobs(schedule)
-          ejectSchedule(schedule)
           setNodeStatusToNextEvent(schedule)
         },
       })
@@ -226,19 +210,6 @@ module.exports = function (RED) {
         )
       } catch (err) {
         setNodeStatus(err.message)
-      }
-    }
-
-    const findMostRecentEvent = function (schedule) {
-      let pastEvents = Object.keys(schedule)
-        .map((eventType) => schedule[eventType])
-        .sort((e1, e2) => e2.cronTime.unix() - e1.cronTime.unix())
-        .filter((event) => event.cronTime.isBefore(dayjs()))
-
-      if (pastEvents.length > 0) {
-        return pastEvents.shift()
-      } else {
-        throw new Error('no past events')
       }
     }
 
@@ -282,54 +253,6 @@ module.exports = function (RED) {
         next,
       })
     }
-
-    const ejectSchedule = function (schedule) {
-      if (!config.ejectScheduleOnUpdate) {
-        return
-      }
-      node.send({
-        topic: 'suncron:schedule',
-        payload: formatSchedule(schedule),
-      })
-    }
-
-    node.on('input', function (msg, send, done) {
-      send =
-        send ||
-        function () {
-          node.send.apply(node, arguments)
-        }
-      if (typeof msg.payload === 'object') {
-        // config object received as msg.payload
-        debug(`!!!! CONFIG OBJECT RECEIVED !!!`)
-        // debug(msg.payload)
-
-        eventTypes.forEach((eventType) => {
-          if (
-            msg.payload.hasOwnProperty(eventType) &&
-            Number.isInteger(msg.payload[eventType])
-          ) {
-            debug(`new offset for ${eventType}: ${msg.payload[eventType]}`)
-            config[`${eventType}Offset`] = Math.abs(msg.payload[eventType])
-            config[`${eventType}OffsetType`] =
-              msg.payload[eventType] < 0 ? -1 : 1
-          }
-        })
-
-        letsGo()
-      } else {
-        try {
-          const mostRecentEvent = findMostRecentEvent(schedule)
-          ejectMsg(mostRecentEvent, schedule)
-        } catch (e) {
-          debug(e)
-        }
-      }
-
-      if (done) {
-        done()
-      }
-    })
 
     node.on('close', function () {
       stopMsgCrons()
