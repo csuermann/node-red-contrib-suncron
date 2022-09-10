@@ -53,13 +53,13 @@ module.exports = function (RED) {
       )
       const sunTimes = SunCalc.getTimes(midday, config.lat, config.lon)
 
-      const eventType = config.sunEventTime
+      const eventType = config.sunEventType
       const payload = config.payload
       const payloadType = config.payloadType
       const topic = config.topic
       const sunEventTime = dayjs(sunTimes[eventType])
       const offset = config.offset
-      const cronTime = dayjs(sunEventTime).add(offset, 'second')
+      const cronTime = dayjs(sunEventTime).add(offset, 'minute')
 
       return {
         [eventType]: {
@@ -103,7 +103,7 @@ module.exports = function (RED) {
       if (futureEvents.length > 0) {
         return futureEvents.shift()
       } else {
-        throw new Error('done for today')
+        throw new Error('Done for today')
       }
     }
 
@@ -127,7 +127,7 @@ module.exports = function (RED) {
           onTick: () => {
             ejectMsg(event, schedule)
             setNodeStatus(
-              `now: ${event.event} @ ${event.cronTime.format('HH:mm')}`,
+              `Now: ${event.event} @ ${event.cronTime.format('HH:mm')}`,
               'green'
             )
             setTimeout(() => {
@@ -187,9 +187,7 @@ module.exports = function (RED) {
       try {
         const nextEvent = findNextEvent(schedule)
         setNodeStatus(
-          `next: ${nextEvent.eventName} @ ${nextEvent.eventTime.format(
-            'HH:mm'
-          )}`
+          `Scheduled @ ${nextEvent.eventTime.format('HH:mm')}`
         )
       } catch (err) {
         setNodeStatus(err.message)
@@ -251,5 +249,5 @@ module.exports = function (RED) {
     })()
   }
 
-  RED.nodes.registerType('suncron', SuncronNode)
+  RED.nodes.registerType('suncron-pro', SuncronNode)
 }
