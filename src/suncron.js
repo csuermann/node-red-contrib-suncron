@@ -53,45 +53,28 @@ module.exports = function (RED) {
       )
       const sunTimes = SunCalc.getTimes(midday, config.lat, config.lon)
 
-      return eventTypes.reduce((result, eventType) => {
-        const payload = config[`${eventType}Payload`]
+      const eventType = config.sunEventTime
+      const payload = config.payload
+      const payloadType = config.payloadType
+      const topic = config.topic
+      const sunEventTime = dayjs(sunTimes[eventType])
+      const offset = config.offset
+      const cronTime = dayjs(sunEventTime).add(offset, 'second')
 
-        if (payload !== '') {
-          const payloadType = config[`${eventType}PayloadType`]
-          const topic = config[`${eventType}Topic`]
-          const sunEventTime = dayjs(sunTimes[eventType])
-          const offsetSec = config[`${eventType}Offset`]
-          const offsetType = config[`${eventType}OffsetType`]
-          const offset = offsetSec * offsetType
-          let cronTime
-
-          if (offset > 0) {
-            cronTime = dayjs(sunEventTime).add(offsetSec, 'second')
-          } else {
-            cronTime = dayjs(sunEventTime).subtract(offsetSec, 'second')
-          }
-
-          try {
-            result[eventType] = {
-              event: eventType,
-              sunEventTimeUTC: sunEventTime.toISOString(),
-              sunEventTimeLocal: sunEventTime.format('YYYY-MM-DDTHH:mm:ss'),
-              offset: offsetSec * offsetType,
-              cronTime,
-              cronTimeUTC: cronTime.toISOString(),
-              cronTimeLocal: cronTime.format('YYYY-MM-DDTHH:mm:ss'),
-              payload,
-              payloadType,
-              topic,
-            }
-          } catch (e) {
-            console.log(
-              `ignoring event type '${eventType}' as no event time could be determined for current day.`
-            )
-          }
+      return {
+        [eventType]: {
+          event: eventType,
+          sunEventTimeUTC: sunEventTime.toISOString(),
+          sunEventTimeLocal: sunEventTime.format('YYYY-MM-DDTHH:mm:ss'),
+          offset: offset,
+          cronTime,
+          cronTimeUTC: cronTime.toISOString(),
+          cronTimeLocal: cronTime.format('YYYY-MM-DDTHH:mm:ss'),
+          payload,
+          payloadType,
+          topic,
         }
-        return result
-      }, {})
+      }
     }
 
     const formatSchedule = function (schedule) {
