@@ -1,6 +1,6 @@
 <script type="text/javascript">
   ;(function () {
-    let defaults = {
+    const defaults = {
       name: { value: '' },
       lat: { value: '', required: true, validate: RED.validators.number() },
       lon: { value: '', required: true, validate: RED.validators.number() },
@@ -19,7 +19,25 @@
       outputs: 1,
       icon: 'font-awesome/fa-sun-o',
       label: function () {
-        return this.name || (this.sunEventType + ' ' + this.offset + 'm')
+        if (this.name) {
+          return this.name
+        } else {
+          if (this.offset == 0) {
+            return this.sunEventType
+          } else {
+            const sign = this.offset > 0 ? '+' : '-'
+            const hour = Math.floor(this.offset / 60)
+            const min = this.offset % 60
+            let name = this.sunEventType + ' ' + sign
+            if (hour > 0) {
+              name += hour + 'h'
+            }
+            if (min > 0) {
+              name += min + 'm'
+            }
+            return name
+          }
+        }
       },
       oneditprepare: function () {
         $('#geolocate').click(() => {
