@@ -22,8 +22,9 @@
 					return this.sunEventType
 				} else {
 					const sign = this.offset > 0 ? '+' : '-'
-					const hour = Math.floor(this.offset / 60)
-					const min = this.offset % 60
+					const offset = Math.abs(this.offset)
+					const hour = Math.floor(offset / 60)
+					const min = offset % 60
 					let name = this.sunEventType + ' ' + sign
 					if (hour > 0) {
 						name += hour + 'h'

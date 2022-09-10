@@ -8,24 +8,6 @@
 		},
 		label: function () {
 			return this.name || 'suncron-location'
-		},
-		oneditprepare: function () {
-			$('#geolocate').click(() => {
-				if ('geolocation' in navigator) {
-					$('#node-config-input-lat').val('???')
-					$('#node-config-input-lon').val('???')
-					$('#geolocate > i').removeClass('fa-location-arrow')
-					$('#geolocate > i').addClass('fa-hourglass')
-					navigator.geolocation.getCurrentPosition((position) => {
-						$('#node-config-input-lat').val(position.coords.latitude)
-						$('#node-config-input-lon').val(position.coords.longitude)
-						$('#geolocate > i').removeClass('fa-hourglass')
-						$('#geolocate > i').addClass('fa-location-arrow')
-			 		})
-				} else {
-					alert('Sorry, your browser does not support geolocation')
-				}
-			})
 		}
 	})
 </script>
@@ -40,7 +22,6 @@
 		<label for="node-config-input-lat"><i class="fa fa-globe"></i> Location</label>
 		lat: <input type="text" id="node-config-input-lat" placeholder="latitude" style="width:100px">
 		lon: <input type="text" id="node-config-input-lon" placeholder="longitude" style="width:100px">
-		<button id="geolocate"><i class="fa fa-location-arrow"></i></button>
 	</div>
 </script>
 
