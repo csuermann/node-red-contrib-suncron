@@ -37,26 +37,11 @@
 			}
 		},
 		oneditprepare: function () {
-			if (this.payloadType == null) {
-				if (this.payloadType == '') {
-					this.payloadType = 'date'
-				} else {
-					this.payloadType = 'str'
-				}
-			} else if (
-				this.payloadType === 'string' ||
-				this.payloadType === 'none'
-			) {
-				this.payloadType = 'str'
-			}
-
-			$(`#node-input-payloadType`).val(this.payloadType)
 			$(`#node-input-payload`).typedInput({
 				default: 'str',
 				typeField: $(`#node-input-payloadType`),
 				types: ['str', 'num', 'bool', 'json'],
 			})
-			$(`#node-input-payload`).typedInput('type', this.payloadType)
 		},
 	})
 </script>
