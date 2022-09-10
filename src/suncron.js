@@ -249,5 +249,5 @@ module.exports = function (RED) {
     })()
   }
 
-  RED.nodes.registerType('suncron-pro', SuncronNode)
+  RED.nodes.registerType('suncron', SuncronNode)
 }
