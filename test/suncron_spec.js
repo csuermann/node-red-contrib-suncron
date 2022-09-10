@@ -1,6 +1,6 @@
 var should = require('should')
 var helper = require('node-red-node-test-helper')
-var suncron = require('../suncron.js')
+var suncron = require('../src/suncron.js')
 var demoFlow = require('./demo.json')
 
 helper.init(require.resolve('node-red'))
