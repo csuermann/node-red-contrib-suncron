@@ -1,190 +1,188 @@
 <script type="text/javascript">
-  ;(function () {
-    RED.nodes.registerType('suncron', {
-      category: 'common',
-      color: '#FFCC66',
-      defaults: {
-        name: { value: '' },
-        location: { type: 'suncron-location', required: true },
-        sunEventType: { value: 'sunrise' },
-        payload: { value: '', required: false, validate: RED.validators.typedInput('payloadType') },
-        payloadType: { value: 'str', required: false },
-        topic: { value: '', required: false },
-        offset: { value: 0, required: true, validate: RED.validators.number() }
-      },
-      inputs: 0,
-      outputs: 1,
-      icon: 'font-awesome/fa-sun-o',
-      label: function () {
-        if (this.name) {
-          return this.name
-        } else {
-          if (this.offset == 0) {
-            return this.sunEventType
-          } else {
-            const sign = this.offset > 0 ? '+' : '-'
-            const hour = Math.floor(this.offset / 60)
-            const min = this.offset % 60
-            let name = this.sunEventType + ' ' + sign
-            if (hour > 0) {
-              name += hour + 'h'
-            }
-            if (min > 0) {
-              name += min + 'm'
-            }
-            return name
-          }
-        }
-      },
-      oneditprepare: function () {
-        if (this.payloadType == null) {
-          if (this.payloadType == '') {
-            this.payloadType = 'date'
-          } else {
-            this.payloadType = 'str'
-          }
-        } else if (
-          this.payloadType === 'string' ||
-          this.payloadType === 'none'
-        ) {
-          this.payloadType = 'str'
-        }
+	RED.nodes.registerType('suncron', {
+		category: 'common',
+		color: '#FFCC66',
+		defaults: {
+			name: { value: '' },
+			location: { type: 'suncron-location', required: true },
+			sunEventType: { value: 'sunrise' },
+			payload: { value: '', required: false, validate: RED.validators.typedInput('payloadType') },
+			payloadType: { value: 'str', required: false },
+			topic: { value: '', required: false },
+			offset: { value: 0, required: true, validate: RED.validators.number() }
+		},
+		inputs: 0,
+		outputs: 1,
+		icon: 'font-awesome/fa-sun-o',
+		label: function () {
+			if (this.name) {
+				return this.name
+			} else {
+				if (this.offset == 0) {
+					return this.sunEventType
+				} else {
+					const sign = this.offset > 0 ? '+' : '-'
+					const hour = Math.floor(this.offset / 60)
+					const min = this.offset % 60
+					let name = this.sunEventType + ' ' + sign
+					if (hour > 0) {
+						name += hour + 'h'
+					}
+					if (min > 0) {
+						name += min + 'm'
+					}
+					return name
+				}
+			}
+		},
+		oneditprepare: function () {
+			if (this.payloadType == null) {
+				if (this.payloadType == '') {
+					this.payloadType = 'date'
+				} else {
+					this.payloadType = 'str'
+				}
+			} else if (
+				this.payloadType === 'string' ||
+				this.payloadType === 'none'
+			) {
+				this.payloadType = 'str'
+			}
 
-        $(`#node-input-payloadType`).val(this.payloadType)
-        $(`#node-input-payload`).typedInput({
-          default: 'str',
-          typeField: $(`#node-input-payloadType`),
-          types: ['str', 'num', 'bool', 'json'],
-        })
-        $(`#node-input-payload`).typedInput('type', this.payloadType)
-      },
-    })
-  })()
+			$(`#node-input-payloadType`).val(this.payloadType)
+			$(`#node-input-payload`).typedInput({
+				default: 'str',
+				typeField: $(`#node-input-payloadType`),
+				types: ['str', 'num', 'bool', 'json'],
+			})
+			$(`#node-input-payload`).typedInput('type', this.payloadType)
+		},
+	})
 </script>
 
 <script type="text/html" data-template-name="suncron">
-  <div class="form-row">
-      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-      <input type="text" id="node-input-name" placeholder="Name">
-  </div>
+	<div class="form-row">
+			<label for="node-input-name"><i class="icon-tag"></i> Name</label>
+			<input type="text" id="node-input-name" placeholder="Name">
+	</div>
 
-  <div class="form-row">
-    <label for="node-input-location"><i class="fa fa-globe"></i> Location</label>
-    <input type="text" id="node-input-location">
-  </div>
+	<div class="form-row">
+		<label for="node-input-location"><i class="fa fa-globe"></i> Location</label>
+		<input type="text" id="node-input-location">
+	</div>
 
-  <div class="form-row">
-    <label for="node-input-sunEventType"><i class="fa fa-clock-o"></i> <span>Type</span></label>
-    <select style="width:70%; margin-left:0px;" id="node-input-sunEventType">
-      <option value="sunrise">sunrise</option>
-      <option value="sunriseEnd">sunrise end</option>
-      <option value="goldenHourEnd">golden hour end</option>
-      <option value="solarNoon">solar noon</option>
-      <option value="goldenHour">golden hour</option>
-      <option value="sunsetStart">sunset start</option>
-      <option value="sunset">sunset</option>
-      <option value="dusk">dusk</option>
-      <option value="nauticalDusk">nautical dusk</option>
-      <option value="night">night</option>
-      <option value="nadir">nadir</option>
-      <option value="nightEnd">night end</option>
-      <option value="nauticalDawn">nautical dawn</option>
-      <option value="dawn">dawn</option>
-    </select>
-  </div>
+	<div class="form-row">
+		<label for="node-input-sunEventType"><i class="fa fa-clock-o"></i> <span>Type</span></label>
+		<select style="width:70%; margin-left:0px;" id="node-input-sunEventType">
+			<option value="sunrise">sunrise</option>
+			<option value="sunriseEnd">sunrise end</option>
+			<option value="goldenHourEnd">golden hour end</option>
+			<option value="solarNoon">solar noon</option>
+			<option value="goldenHour">golden hour</option>
+			<option value="sunsetStart">sunset start</option>
+			<option value="sunset">sunset</option>
+			<option value="dusk">dusk</option>
+			<option value="nauticalDusk">nautical dusk</option>
+			<option value="night">night</option>
+			<option value="nadir">nadir</option>
+			<option value="nightEnd">night end</option>
+			<option value="nauticalDawn">nautical dawn</option>
+			<option value="dawn">dawn</option>
+		</select>
+	</div>
 
-  <div class="form-row">
-    <label for="node-input-payload"><i class="fa fa-envelope"></i> <span data-i18n="common.label.payload">Payload</span></label>
-    <input type="text" id="node-input-payload" style="width:70%">
-    <input type="hidden" id="node-input-payloadType">
-  </div>
+	<div class="form-row">
+		<label for="node-input-payload"><i class="fa fa-envelope"></i> <span data-i18n="common.label.payload">Payload</span></label>
+		<input type="text" id="node-input-payload" style="width:70%">
+		<input type="hidden" id="node-input-payloadType">
+	</div>
 
-  <div class="form-row">
-    <label for="node-input-topic"><i class="fa fa-tasks"></i> <span>Topic</span></label>
-    <input type="text" id="node-input-topic">
-  </div>
+	<div class="form-row">
+		<label for="node-input-topic"><i class="fa fa-tasks"></i> <span>Topic</span></label>
+		<input type="text" id="node-input-topic">
+	</div>
 
-  <div class="form-row">
-    <label for="node-input-offset"><i class="fa fa-sliders"></i> <span>Offset[min]</span></label>
-    <input type="number" id="node-input-offset">
-  </div>
+	<div class="form-row">
+		<label for="node-input-offset"><i class="fa fa-sliders"></i> <span>Offset[min]</span></label>
+		<input type="number" id="node-input-offset">
+	</div>
 </script>
 
 <script type="text/html" data-help-name="suncron">
-    <p>TODO: update this</p>
-    <p>This node emits configurable outgoing messages based on the position of the sun.</p>
-    <h3>Sun event outputs</h3>
-      <dl class="message-properties">
-        <dt>msg.payload
-            <span class="property-type">string | bool | number | obj</span>
-        </dt>
-        <dt>msg.topic
-          <span class="property-type">string</span>
-        </dt>
-        <dt>msg.schedule
-          <span class="property-type">obj</span>
-        </dt>
-        <dt>msg.next
-          <span class="property-type">obj</span>
-        </dt>
-      </dl>
-    <h4>Details</h4>
-    <p>
-      For each significant sun event (e.g. sunrise, noon, dusk etc.) a <code>msg.payload</code> and <code>msg.topic</code> can be
-      specified which the node will emit once the event fires.
-    </p>
-    <p>
-      You can configure a positive or negative offset to adjust each event.
-    </p>
-    <h4>Schedule</h4>
-    <p>
-      The <code>msg.schedule</code> attribute contains an object with details about the
-      schedule of the current date. The schedule contains only events which have been configured with a payload.
-      Each event has the following attributes:
-      <ul>
-        <li><code>event</code> is the name of the sun event</li>
-        <li><code>sunEventTime</code> refers to the unadjusted time of the respective sun event.</li>
-        <li><code>cronTime</code> refers to the adjusted time, i.e. taking the offset into account.</li>
-      </ul>
-    </p>
-    <h5>Example <code>msg.schedule</code> object</h5>
-    <pre>
-  {
-    "sunrise": {
-        "event": "sunrise",
-        "sunEventTime": "2019-09-08T06:29:51",
-        "cronTime": "2019-09-08T07:31:51"
-    },
-    "sunriseEnd": {
-        "event": "sunriseEnd",
-        "sunEventTime": "2019-09-08T06:33:24",
-        "cronTime": "2019-09-08T03:33:24"
-    },
-    "dawn": {
-        "event": "dawn",
-        "sunEventTime": "2019-09-08T05:54:49",
-        "cronTime": "2019-09-08T06:54:49"
-    }
-    ...
-  }
-    </pre>
-    <h4>Next</h4>
-    <p>
-      The <code>msg.next</code> attribute contains the event object of the schedule which is coming up next.
-    </p>
-    <h3>Schedule event outputs</h3>
-    <p>
-      If the checkbox &quot;Emit schedule when updated&quot; is ticked, the node will emit additional messages whenever
-      the schedule gets updated. This happens on startup, when offsets are overridden at runtime, and shortly
-      after midnight. Those messages will contain the schedule object as <code>msg.payload</code> (same structure as above)
-      and the string &quot;suncron:schedule&quot; as <code>msg.topic</code>.
-    </p>
-    <dl class="message-properties">
-      <dt>msg.payload
-          <span class="property-type">obj</span>
-      </dt>
-      <dt>msg.topic
-        <span class="property-type">&quot;suncron:schedule&quot;</span>
-      </dt>
-    </dl>
+		<p>TODO: update this</p>
+		<p>This node emits configurable outgoing messages based on the position of the sun.</p>
+		<h3>Sun event outputs</h3>
+			<dl class="message-properties">
+				<dt>msg.payload
+						<span class="property-type">string | bool | number | obj</span>
+				</dt>
+				<dt>msg.topic
+					<span class="property-type">string</span>
+				</dt>
+				<dt>msg.schedule
+					<span class="property-type">obj</span>
+				</dt>
+				<dt>msg.next
+					<span class="property-type">obj</span>
+				</dt>
+			</dl>
+		<h4>Details</h4>
+		<p>
+			For each significant sun event (e.g. sunrise, noon, dusk etc.) a <code>msg.payload</code> and <code>msg.topic</code> can be
+			specified which the node will emit once the event fires.
+		</p>
+		<p>
+			You can configure a positive or negative offset to adjust each event.
+		</p>
+		<h4>Schedule</h4>
+		<p>
+			The <code>msg.schedule</code> attribute contains an object with details about the
+			schedule of the current date. The schedule contains only events which have been configured with a payload.
+			Each event has the following attributes:
+			<ul>
+				<li><code>event</code> is the name of the sun event</li>
+				<li><code>sunEventTime</code> refers to the unadjusted time of the respective sun event.</li>
+				<li><code>cronTime</code> refers to the adjusted time, i.e. taking the offset into account.</li>
+			</ul>
+		</p>
+		<h5>Example <code>msg.schedule</code> object</h5>
+		<pre>
+	{
+		"sunrise": {
+				"event": "sunrise",
+				"sunEventTime": "2019-09-08T06:29:51",
+				"cronTime": "2019-09-08T07:31:51"
+		},
+		"sunriseEnd": {
+				"event": "sunriseEnd",
+				"sunEventTime": "2019-09-08T06:33:24",
+				"cronTime": "2019-09-08T03:33:24"
+		},
+		"dawn": {
+				"event": "dawn",
+				"sunEventTime": "2019-09-08T05:54:49",
+				"cronTime": "2019-09-08T06:54:49"
+		}
+		...
+	}
+		</pre>
+		<h4>Next</h4>
+		<p>
+			The <code>msg.next</code> attribute contains the event object of the schedule which is coming up next.
+		</p>
+		<h3>Schedule event outputs</h3>
+		<p>
+			If the checkbox &quot;Emit schedule when updated&quot; is ticked, the node will emit additional messages whenever
+			the schedule gets updated. This happens on startup, when offsets are overridden at runtime, and shortly
+			after midnight. Those messages will contain the schedule object as <code>msg.payload</code> (same structure as above)
+			and the string &quot;suncron:schedule&quot; as <code>msg.topic</code>.
+		</p>
+		<dl class="message-properties">
+			<dt>msg.payload
+					<span class="property-type">obj</span>
+			</dt>
+			<dt>msg.topic
+				<span class="property-type">&quot;suncron:schedule&quot;</span>
+			</dt>
+		</dl>
 </script>
