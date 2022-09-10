@@ -1,6 +1,5 @@
 const CronJob = require('cron').CronJob
 const dayjs = require('dayjs')
-const SunCalc = require('suncalc')
 
 module.exports = function (RED) {
   function SuncronNode(config) {
@@ -9,50 +8,20 @@ module.exports = function (RED) {
     const node = this
 
     let schedule
-
-    const eventTypes = [
-      'sunrise',
-      'sunriseEnd',
-      'goldenHourEnd',
-      'solarNoon',
-      'goldenHour',
-      'sunsetStart',
-      'sunset',
-      'dusk',
-      'nauticalDusk',
-      'night',
-      'nadir',
-      'nightEnd',
-      'nauticalDawn',
-      'dawn',
-    ]
-
     let msgCrons = []
-    let dailyCron = []
 
     const letsGo = function () {
-      schedule = calcScheduleForToday()
-
-      installMsgCronjobs(schedule)
-      debug(schedule)
-
-      dailyCron = installDailyCronjob()
+      setNodeStatus('Setting up...')
+      const location = RED.nodes.getNode(config.location)
+      location.sunTimes.subscribe({ next: (sunTimes) => {
+        if (sunTimes == null) { return }
+        schedule = calcScheduleForToday(sunTimes)
+        installMsgCronjobs(schedule)
+        debug(schedule)
+      }})
     }
 
-    const calcScheduleForToday = function () {
-      const today = new Date()
-      const midday = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate(),
-        12,
-        0,
-        0,
-        0,
-        0
-      )
-      const sunTimes = SunCalc.getTimes(midday, config.lat, config.lon)
-
+    const calcScheduleForToday = function (sunTimes) {
       const eventType = config.sunEventType
       const payload = config.payload
       const payloadType = config.payloadType
@@ -148,24 +117,6 @@ module.exports = function (RED) {
       setNodeStatusToNextEvent(schedule)
     }
 
-    const installDailyCronjob = function () {
-      // run daily cron 5 seconds past midnight (except for debugging: 5 seconds past the full minute)
-      const cronTime = RED.settings.suncronMockTimes
-        ? '5 * * * * *'
-        : '5 0 0 * * *'
-
-      const cron = new CronJob({
-        cronTime,
-        onTick: () => {
-          schedule = calcScheduleForToday()
-          installMsgCronjobs(schedule)
-          setNodeStatusToNextEvent(schedule)
-        },
-      })
-      cron.start()
-      return cron
-    }
-
     const debug = function (debugMsg) {
       if (RED.settings.suncronDebug) {
         node.warn(debugMsg)
@@ -234,14 +185,13 @@ module.exports = function (RED) {
 
     node.on('close', function () {
       stopMsgCrons()
-      dailyCron.stop()
     })
     ;(function () {
       // on startup:
       try {
         letsGo()
       } catch (e) {
-        console.log(e)
+				node.error(e)
       }
     })()
   }

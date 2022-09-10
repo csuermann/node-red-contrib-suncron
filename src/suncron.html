@@ -1,20 +1,17 @@
 <script type="text/javascript">
   ;(function () {
-    const defaults = {
-      name: { value: '' },
-      lat: { value: '', required: true, validate: RED.validators.number() },
-      lon: { value: '', required: true, validate: RED.validators.number() },
-      sunEventType: { value: 'sunrise' },
-      payload: { value: '', required: false, validate: RED.validators.typedInput('payloadType') },
-      payloadType: { value: 'str', required: false },
-      topic: { value: '', required: false },
-      offset: { value: 0, required: true, validate: RED.validators.number() }
-    }
-
     RED.nodes.registerType('suncron', {
       category: 'common',
       color: '#FFCC66',
-      defaults: defaults,
+      defaults: {
+        name: { value: '' },
+        location: { type: 'suncron-location', required: true },
+        sunEventType: { value: 'sunrise' },
+        payload: { value: '', required: false, validate: RED.validators.typedInput('payloadType') },
+        payloadType: { value: 'str', required: false },
+        topic: { value: '', required: false },
+        offset: { value: 0, required: true, validate: RED.validators.number() }
+      },
       inputs: 0,
       outputs: 1,
       icon: 'font-awesome/fa-sun-o',
@@ -40,23 +37,6 @@
         }
       },
       oneditprepare: function () {
-        $('#geolocate').click(() => {
-          if ('geolocation' in navigator) {
-            $('#node-input-lat').val('???')
-            $('#node-input-lon').val('???')
-            $('#geolocate > i').removeClass('fa-location-arrow')
-            $('#geolocate > i').addClass('fa-hourglass')
-            navigator.geolocation.getCurrentPosition((position) => {
-              $('#node-input-lat').val(position.coords.latitude)
-              $('#node-input-lon').val(position.coords.longitude)
-              $('#geolocate > i').removeClass('fa-hourglass')
-              $('#geolocate > i').addClass('fa-location-arrow')
-            })
-          } else {
-            alert('Sorry, your browser does not support geolocation')
-          }
-        })
-
         if (this.payloadType == null) {
           if (this.payloadType == '') {
             this.payloadType = 'date'
@@ -81,11 +61,6 @@
     })
   })()
 </script>
-<style>
-  .form-row label {
-    width: 130px !important;
-  }
-</style>
 
 <script type="text/html" data-template-name="suncron">
   <div class="form-row">
@@ -94,10 +69,8 @@
   </div>
 
   <div class="form-row">
-    <label for="node-input-lat"><i class="fa fa-globe"></i> Location</label>
-    lat: <input type="text" id="node-input-lat" placeholder="latitude" style="width:100px">
-    lon: <input type="text" id="node-input-lon" placeholder="longitude" style="width:100px">
-    <button id="geolocate"><i class="fa fa-location-arrow"></i></button>
+    <label for="node-input-location"><i class="fa fa-globe"></i> Location</label>
+    <input type="text" id="node-input-location">
   </div>
 
   <div class="form-row">

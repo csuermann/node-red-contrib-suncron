@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-suncron-pro",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.12",
   "description": "A Node-RED node that triggers configurable outgoing messages based on the position of the sun",
   "main": "index.js",
   "author": "Cornelius Suermann",
@@ -26,12 +26,14 @@
   },
   "node-red": {
     "nodes": {
-      "suncron": "src/suncron.js"
+      "suncron": "src/suncron.js",
+      "suncron-location": "src/suncron-location.js"
     }
   },
   "dependencies": {
     "cron": "^1.8.2",
     "dayjs": "^1.10.5",
+    "rxjs": "^7.5.6",
     "suncalc": "^1.8.0"
   },
   "devDependencies": {
