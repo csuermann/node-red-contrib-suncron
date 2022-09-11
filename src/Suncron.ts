@@ -119,7 +119,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 				})
 			}
 			
-			node.on('close', function () {
+			node.on('close', function (): void {
 				stopMsgCrons()
 			})
 

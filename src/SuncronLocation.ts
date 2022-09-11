@@ -16,7 +16,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 			let updateRetry: NodeJS.Timeout | undefined
 			let dailyCron: CronJob | undefined
 
-			const updateSunTimes = function () {
+			const updateSunTimes = function (): void {
 				try {
 					const today = new Date()
 					const midday = new Date(
@@ -49,7 +49,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 				return cron
 			}
 
-			node.on('close', function () {
+			node.on('close', function (): void {
 				closed = true
 				dailyCron?.stop()
 				clearTimeout(updateRetry)
