@@ -91,7 +91,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 			}
 
 			const ejectMsg = function (event: SuncronEvent): void {
-				const castPayload = (payload, payloadType) => {
+				const castPayload = (payload: string, payloadType: string) => {
 					if (payloadType === 'num') {
 						return Number(payload)
 					} else if (payloadType === 'bool') {
