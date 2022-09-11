@@ -13,7 +13,7 @@ module.exports = function (RED) {
 		const letsGo = function () {
 			setNodeStatus('Setting up...')
 			const location = RED.nodes.getNode(config.location)
-			location.sunTimes.subscribe({ next: (sunTimes) => {
+			location.credentials.sunTimes.subscribe({ next: (sunTimes) => {
 				if (sunTimes == null) { return }
 				schedule = calcScheduleForToday(sunTimes)
 				installMsgCronjobs(schedule)
