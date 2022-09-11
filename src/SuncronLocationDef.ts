@@ -1,6 +1,6 @@
-import * as NodeRED from "node-red"
-import { BehaviorSubject } from "rxjs"
-import * as SunCalc from "suncalc"
+import * as NodeRED from 'node-red'
+import { BehaviorSubject } from 'rxjs'
+import * as SunCalc from 'suncalc'
 
 export interface SuncronLocationConfig extends NodeRED.NodeDef {
 	lat: number

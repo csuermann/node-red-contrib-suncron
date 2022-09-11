@@ -1,11 +1,11 @@
-import * as NodeRED from "node-red"
-import { BehaviorSubject } from "rxjs"
-import { CronJob } from "cron"
-import * as SunCalc from "suncalc"
-import { SuncronLocationConfig, SuncronLocationState } from "./SuncronLocationDef"
+import * as NodeRED from 'node-red'
+import { BehaviorSubject } from 'rxjs'
+import { CronJob } from 'cron'
+import * as SunCalc from 'suncalc'
+import { SuncronLocationConfig, SuncronLocationState } from './SuncronLocationDef'
 
 export = (RED: NodeRED.NodeAPI): void => {
-	RED.nodes.registerType("suncron-location",
+	RED.nodes.registerType('suncron-location',
 		function (this: NodeRED.Node<SuncronLocationState>, config: SuncronLocationConfig): void {
 			RED.nodes.createNode(this, config)
 			const node = this
