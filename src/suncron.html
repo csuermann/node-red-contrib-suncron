@@ -92,10 +92,70 @@
 		<label for="node-input-offset"><i class="fa fa-sliders"></i> <span>Offset[min]</span></label>
 		<input type="number" id="node-input-offset">
 	</div>
+
+	<hr />
+
+	<table style="border-spacing: 10px 0;">
+		<tr>
+			<td>Sunrise</td>
+			<td>Top edge of the sun appears over the horizon</td>
+		</tr>
+		<tr>
+			<td>Sunrise End</td>
+			<td>Bottom edge of the sun touches the horizon</td>
+		</tr>
+		<tr>
+			<td>Golden Hour End</td>
+			<td>Morning golden hour (soft light, best time for photography) ends</td>
+		</tr>
+		<tr>
+			<td>Solar Noon</td>
+			<td>Sun is in the highest position</td>
+		</tr>
+		<tr>
+			<td>Golden Hour</td>
+			<td>Evening golden hour starts</td>
+		</tr>
+		<tr>
+			<td>Sunset Start</td>
+			<td>Bottom edge of the sun touches the horizon</td>
+		</tr>
+		<tr>
+			<td>Sunset</td>
+			<td>Sun disappears below the horizon, evening civil twilight starts</td>
+		</tr>
+		<tr>
+			<td>Dusk</td>
+			<td>Evening nautical twilight starts</td>
+		</tr>
+		<tr>
+			<td>Nautical Dusk</td>
+			<td>Evening astronomical twilight starts</td>
+		</tr>
+		<tr>
+			<td>Night</td>
+			<td>Dark enough for astronomical observations</td>
+		</tr>
+		<tr>
+			<td>Nadir</td>
+			<td>Darkest moment of the night, sun is in the lowest position</td>
+		</tr>
+		<tr>
+			<td>Night End</td>
+			<td>Morning astronomical twilight starts</td>
+		</tr>
+		<tr>
+			<td>Nautical Dawn</td>
+			<td>Morning nautical twilight starts</td>
+		</tr>
+		<tr>
+			<td>Dawn</td>
+			<td>Morning nautical twilight ends, morning civil twilight starts</td>
+		</div>
+	</table>
 </script>
 
 <script type="text/html" data-help-name="suncron">
-		<p>TODO: update this</p>
 		<p>This node emits configurable outgoing messages based on the position of the sun.</p>
 		<h3>Sun event outputs</h3>
 			<dl class="message-properties">
@@ -104,12 +164,6 @@
 				</dt>
 				<dt>msg.topic
 					<span class="property-type">string</span>
-				</dt>
-				<dt>msg.schedule
-					<span class="property-type">obj</span>
-				</dt>
-				<dt>msg.next
-					<span class="property-type">obj</span>
 				</dt>
 			</dl>
 		<h4>Details</h4>
@@ -120,55 +174,4 @@
 		<p>
 			You can configure a positive or negative offset to adjust each event.
 		</p>
-		<h4>Schedule</h4>
-		<p>
-			The <code>msg.schedule</code> attribute contains an object with details about the
-			schedule of the current date. The schedule contains only events which have been configured with a payload.
-			Each event has the following attributes:
-			<ul>
-				<li><code>event</code> is the name of the sun event</li>
-				<li><code>sunEventTime</code> refers to the unadjusted time of the respective sun event.</li>
-				<li><code>cronTime</code> refers to the adjusted time, i.e. taking the offset into account.</li>
-			</ul>
-		</p>
-		<h5>Example <code>msg.schedule</code> object</h5>
-		<pre>
-	{
-		"sunrise": {
-				"event": "sunrise",
-				"sunEventTime": "2019-09-08T06:29:51",
-				"cronTime": "2019-09-08T07:31:51"
-		},
-		"sunriseEnd": {
-				"event": "sunriseEnd",
-				"sunEventTime": "2019-09-08T06:33:24",
-				"cronTime": "2019-09-08T03:33:24"
-		},
-		"dawn": {
-				"event": "dawn",
-				"sunEventTime": "2019-09-08T05:54:49",
-				"cronTime": "2019-09-08T06:54:49"
-		}
-		...
-	}
-		</pre>
-		<h4>Next</h4>
-		<p>
-			The <code>msg.next</code> attribute contains the event object of the schedule which is coming up next.
-		</p>
-		<h3>Schedule event outputs</h3>
-		<p>
-			If the checkbox &quot;Emit schedule when updated&quot; is ticked, the node will emit additional messages whenever
-			the schedule gets updated. This happens on startup, when offsets are overridden at runtime, and shortly
-			after midnight. Those messages will contain the schedule object as <code>msg.payload</code> (same structure as above)
-			and the string &quot;suncron:schedule&quot; as <code>msg.topic</code>.
-		</p>
-		<dl class="message-properties">
-			<dt>msg.payload
-					<span class="property-type">obj</span>
-			</dt>
-			<dt>msg.topic
-				<span class="property-type">&quot;suncron:schedule&quot;</span>
-			</dt>
-		</dl>
 </script>
