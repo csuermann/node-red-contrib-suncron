@@ -31,19 +31,6 @@ export = (RED: NodeRED.NodeAPI): void => {
 					}
 				]
 			}
-			
-
-			function findNextEvent(schedule: Array<SuncronEvent>): SuncronEvent {
-				const futureEvents = schedule
-					.sort((e1, e2) => e1.cronTime.unix() - e2.cronTime.unix())
-					.filter((event) => event.cronTime.isAfter(dayjs()))
-				const nextEvent = futureEvents.shift()
-				if (nextEvent != undefined) {
-					return nextEvent
-				} else {
-					throw Error('Done for today')
-				}
-			}
 
 			const installMsgCronjobs = function (schedule: Array<SuncronEvent>): void {
 				stopMsgCrons()
@@ -83,11 +70,14 @@ export = (RED: NodeRED.NodeAPI): void => {
 			}
 
 			const setNodeStatusToNextEvent = function (schedule: Array<SuncronEvent>): void {
-				try {
-					const nextEvent = findNextEvent(schedule)
+				const futureEvents = schedule
+					.sort((e1, e2) => e1.cronTime.unix() - e2.cronTime.unix())
+					.filter((event) => event.cronTime.isAfter(dayjs()))
+				const nextEvent = futureEvents.shift()
+				if (nextEvent != undefined) {
 					setNodeStatus(`Scheduled @ ${nextEvent.cronTime.format('HH:mm')}`)
-				} catch (error) {
-					setNodeStatus((error as Error).message)
+				} else {
+					setNodeStatus('Done for today')
 				}
 			}
 
