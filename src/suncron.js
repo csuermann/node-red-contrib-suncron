@@ -17,7 +17,6 @@ module.exports = function (RED) {
 				if (sunTimes == null) { return }
 				schedule = calcScheduleForToday(sunTimes)
 				installMsgCronjobs(schedule)
-				debug(schedule)
 			}})
 		}
 
@@ -56,11 +55,6 @@ module.exports = function (RED) {
 			stopMsgCrons()
 
 			for (const event of schedule) {
-				// override cronTimes for debugging purpose
-				if (RED.settings.suncronMockTimes) {
-					event.cronTime = dayjs().add(i * 5, 'second')
-				}
-
 				let cron = new CronJob({
 					cronTime: event.cronTime.toDate(),
 					onTick: () => {
@@ -79,18 +73,11 @@ module.exports = function (RED) {
 					cron.start()
 					msgCrons.push(cron)
 				} catch (err) {
-					debug(`${event.name}: ${err.message}`)
+					node.error(err.message)
 				}
 			}
 
-			debug(`${schedule.length} msg crons installed`)
 			setNodeStatusToNextEvent(schedule)
-		}
-
-		const debug = function (debugMsg) {
-			if (RED.settings.suncronDebug) {
-				node.warn(debugMsg)
-			}
 		}
 
 		const setNodeStatus = function (text, color = 'grey') {
@@ -117,8 +104,6 @@ module.exports = function (RED) {
 				msgCrons.forEach((cron) => {
 					cron.stop()
 				})
-
-				debug(`${msgCrons.length} msg crons deleted`)
 				msgCrons = []
 			}
 		}

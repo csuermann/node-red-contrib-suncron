@@ -9,6 +9,7 @@ module.exports = function (RED) {
 
 		const node = this
 		node.sunTimes = new BehaviorSubject()
+		let updateRetry
 		let dailyCron = []
 
 		const letsGo = function () {
@@ -30,21 +31,17 @@ module.exports = function (RED) {
 					0
 				)
 				const sunTimes = SunCalc.getTimes(midday, config.lat, config.lon)
-				node.sunTimes.next(sunTimes) 
+				node.sunTimes.next(sunTimes)
+				updateRetry = undefined
 			} catch (e) {
 				node.error(e)
-				setTimeout(updateSunTimes, 60000)
+				updateRetry = setTimeout(updateSunTimes, 60000)
 			}
 		}
 
-		const installDailyCronjob = function () {
-			// run daily cron 5 seconds past midnight (except for debugging: 5 seconds past the full minute)
-			const cronTime = RED.settings.suncronMockTimes
-				? '5 * * * * *'
-				: '5 0 0 * * *'
-  
+		const installDailyCronjob = function () {  
 			const cron = new CronJob({
-				cronTime,
+				cronTime: '5 0 0 * * *',
 				onTick: () => {
 					updateSunTimes()
 				},
@@ -55,6 +52,7 @@ module.exports = function (RED) {
 
 		node.on('close', function () {
 			dailyCron.stop()
+			clearTimeout(updateRetry)
 		})
 		;(function () {
 			// on startup:

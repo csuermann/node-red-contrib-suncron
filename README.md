@@ -1,4 +1,4 @@
-# SunCron
+# SunCron Pro
 
 A Node-RED node that can output configurable messages at significant sun events
 

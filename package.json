@@ -1,25 +1,19 @@
 {
   "name": "node-red-contrib-suncron-pro",
-  "version": "2.0.0-alpha.24",
+  "version": "2.0.0-alpha.25",
   "description": "A Node-RED node that triggers configurable outgoing messages based on the position of the sun",
   "main": "index.js",
-  "author": "Cornelius Suermann",
+  "author": "Benedek Kozma",
   "license": "MIT",
   "keywords": [
     "node-red",
-    "smart home",
-    "sun",
     "sunset",
     "sunrise",
-    "dusk",
-    "noon",
-    "cron",
-    "timer",
-    "timer clock"
+    "schedule"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/csuermann/node-red-contrib-suncron"
+    "url": "https://github.com/Cyberbeni/node-red-contrib-suncron-pro"
   },
   "scripts": {
     "test": "mocha \"test/**/*_spec.js\""
@@ -50,8 +44,7 @@
   },
   "release": {
     "branches": [
-      "master",
-      "next"
+      "master"
     ]
   }
 }
