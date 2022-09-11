@@ -33,7 +33,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 				} catch (e) {
 					node.error(e)
 					if (!closed) {
-						updateRetry = setTimeout(updateSunTimes, 60000)
+						updateRetry = setTimeout(updateSunTimes, 60_000)
 					}
 				}
 			}
