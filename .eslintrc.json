@@ -22,6 +22,6 @@
 		"quotes": ["warn", "single"],
 		"semi": ["warn", "never"],
 		"@typescript-eslint/no-floating-promises": ["error", { "ignoreVoid": true }],
-		"@typescript-eslint/no-this-alias": ["off"]
+		"@typescript-eslint/no-this-alias": "off"
 	}
 }
