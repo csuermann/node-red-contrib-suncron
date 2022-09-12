@@ -15,13 +15,16 @@ export = (RED: NodeRED.NodeAPI): void => {
 
 			const calcScheduleForToday = function (sunTimes: SunCalc.GetTimesResult): Array<SuncronEvent> {
 				const eventType = config.sunEventType
+				const sunEventTime = dayjs(sunTimes[eventType])
+				if (!sunEventTime.isValid()) {
+					return []
+				}
+
 				const payload = config.payload
 				const payloadType = config.payloadType
 				const topic = config.topic
-				const sunEventTime = dayjs(sunTimes[eventType])
 				const offset = config.offset
 				const cronTime = dayjs(sunEventTime).add(offset, 'minute')
-
 				return [
 					{
 						cronTime,

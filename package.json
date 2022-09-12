@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-suncron-pro",
-  "version": "2.0.0-alpha.40",
+  "version": "2.0.0-alpha.45",
   "description": "A Node-RED node that triggers configurable outgoing messages based on the position of the sun",
   "main": "index.js",
   "author": "Benedek Kozma",
