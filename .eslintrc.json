@@ -5,7 +5,8 @@
 	},
 	"extends": [
 		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended"
+		"plugin:@typescript-eslint/recommended",
+		"plugin:rxjs/recommended"
 	],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
@@ -22,6 +23,8 @@
 		"quotes": ["warn", "single"],
 		"semi": ["warn", "never"],
 		"@typescript-eslint/no-floating-promises": ["error", { "ignoreVoid": true }],
-		"@typescript-eslint/no-this-alias": "off"
+		"@typescript-eslint/no-this-alias": "off",
+		"rxjs/no-ignored-observable": "error",
+		"rxjs/no-ignored-subscription": "error"
 	}
 }

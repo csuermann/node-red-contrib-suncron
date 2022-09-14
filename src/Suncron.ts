@@ -4,12 +4,14 @@ import { SuncronConfig, SuncronEvent } from './SuncronDef'
 import * as SunCalc from 'suncalc'
 import dayjs from 'dayjs'
 import { SuncronLocationState } from './SuncronLocationDef'
+import { Subscription } from 'rxjs'
 
 export = (RED: NodeRED.NodeAPI): void => {
 	RED.nodes.registerType('suncron',
 		function (this: NodeRED.Node, config: SuncronConfig): void {
 			RED.nodes.createNode(this, config)
 			const node = this
+			let sunTimesObserver: Subscription | undefined
 			let schedule: Array<SuncronEvent> = []
 			let msgCrons: Array<CronJob> = []
 
@@ -116,13 +118,14 @@ export = (RED: NodeRED.NodeAPI): void => {
 			}
 			
 			node.on('close', function (): void {
+				sunTimesObserver?.unsubscribe()
 				stopMsgCrons()
 			})
 
 			try {
 				setNodeStatus('Setting up...')
 				const location = RED.nodes.getNode(config.location) as NodeRED.Node<SuncronLocationState>
-				location.credentials.sunTimes.subscribe({ next: (sunTimes) => {
+				sunTimesObserver = location.credentials.sunTimes.subscribe({ next: (sunTimes) => {
 					if (sunTimes == undefined) { return }
 					schedule = calcScheduleForToday(sunTimes)
 					installMsgCronjobs(schedule)
