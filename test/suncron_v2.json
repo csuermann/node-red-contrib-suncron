@@ -1,0 +1,17 @@
+[
+  {
+    "id": "n1",
+    "type": "suncron",
+    "z": "86bb9161.44677",
+    "name": "suncron",
+    "location": "n0",
+    "sunEventType": "sunrise",
+    "payload": "sunrisePayload",
+    "payloadType": "str",
+    "topic": "sunriseTopic",
+    "offset": 3720,
+    "x": 100,
+    "y": 100,
+    "wires": [[]]
+  }
+]

@@ -1,55 +1,56 @@
 {
-  "name": "node-red-contrib-suncron",
-  "version": "1.6.0",
+  "name": "node-red-contrib-cb-suncron",
+  "version": "2.0.0",
   "description": "A Node-RED node that triggers configurable outgoing messages based on the position of the sun",
   "main": "index.js",
-  "author": "Cornelius Suermann",
+  "author": "Benedek Kozma",
   "license": "MIT",
   "keywords": [
     "node-red",
-    "smart home",
-    "sun",
     "sunset",
     "sunrise",
-    "dusk",
-    "noon",
-    "cron",
-    "timer",
-    "timer clock"
+    "schedule"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/csuermann/node-red-contrib-suncron"
+    "url": "https://github.com/Cyberbeni/node-red-contrib-cb-suncron"
   },
   "scripts": {
-    "test": "mocha \"test/**/*_spec.js\""
+    "format": "eslint --max-warnings=0 --fix src/**/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "test": "mocha \"test/**/*_spec.js\"",
+    "clean": "rm -f *.tsbuildinfo && rm -rf dist && rm -f *.tgz",
+    "build": "tsc && cp src/*.html dist"
   },
   "node-red": {
     "nodes": {
-      "suncron": "suncron.js"
+      "suncron": "dist/Suncron.js",
+      "suncron-location": "dist/SuncronLocation.js"
     }
   },
   "dependencies": {
-    "cron": "^1.8.2",
-    "dayjs": "^1.10.5",
-    "suncalc": "^1.8.0"
+    "cron": "^2.1.0",
+    "dayjs": "^1.11.5",
+    "rxjs": "^7.5.6",
+    "suncalc": "^1.9.0"
   },
   "devDependencies": {
-    "eslint": "^7.29.0",
-    "mocha": "^9.0.1",
-    "node-red": "^1.2.9",
-    "node-red-node-test-helper": "^0.2.5"
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true
+    "@types/cron": "^2.0.0",
+    "@types/node": "^18.7.18",
+    "@types/node-red": "^1.2.1",
+    "@types/suncalc": "^1.8.1",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
+    "eslint": "^8.23.1",
+    "eslint-plugin-rxjs": "^5.0.2",
+    "mocha": "^10.0.0",
+    "node-red": "^3.0.2",
+    "node-red-node-test-helper": "^0.3.0",
+    "typescript": "^4.8.3"
   },
   "release": {
     "branches": [
-      "master",
-      "next"
+      "master"
     ]
   }
 }

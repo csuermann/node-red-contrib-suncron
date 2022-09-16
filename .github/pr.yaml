@@ -1,0 +1,7 @@
+name: "PR checks"
+
+on: pull_request
+
+jobs:
+  npm-lint-and-test:
+    uses: Cyberbeni/workflows/.github/workflows/npm-lint-and-test@master
