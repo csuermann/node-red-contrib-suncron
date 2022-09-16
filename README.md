@@ -39,4 +39,4 @@ Depending on your configured location (lat / lon) and time of the year, you migh
 
 ## Contributions and Suggestions
 
-... are always welcome! Just file a GitHub [issue](https://github.com/Cyberbeni/node-red-contrib-suncron-pro/issues) or [pull request](https://github.com/Cyberbeni/node-red-contrib-suncron-pro/pulls)!
+... are always welcome! Just file a GitHub [issue](https://github.com/Cyberbeni/node-red-contrib-cb-suncron/issues) or [pull request](https://github.com/Cyberbeni/node-red-contrib-cb-suncron/pulls)!
