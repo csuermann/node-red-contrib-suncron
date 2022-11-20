@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-cb-suncron",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A Node-RED node that triggers configurable outgoing messages based on the position of the sun",
   "main": "index.js",
   "author": "Benedek Kozma",
@@ -20,7 +20,7 @@
     "lint": "eslint src/**/*.ts",
     "test": "mocha \"test/**/*_spec.js\"",
     "clean": "rm -f *.tsbuildinfo && rm -rf dist && rm -f *.tgz",
-    "build": "tsc && cp src/*.html dist"
+    "build": "tsc && rm -f dist/*.html && cp src/*.html dist"
   },
   "node-red": {
     "nodes": {
