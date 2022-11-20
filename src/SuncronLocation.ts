@@ -5,13 +5,10 @@ import * as SunCalc from 'suncalc'
 import { SuncronLocationRuntimeConfig, SuncronLocationState } from './SuncronLocationDef'
 
 export = (RED: NodeRED.NodeAPI): void => {
-	RED.nodes.registerType('suncron-location',
+	RED.nodes.registerType<NodeRED.Node<SuncronLocationState>, SuncronLocationRuntimeConfig, {}, {}>('suncron-location',
 		function (this: NodeRED.Node<SuncronLocationState>, config: SuncronLocationRuntimeConfig): void {
 			RED.nodes.createNode(this, config)
 			const node = this
-			node.credentials = {
-				sunTimes: new BehaviorSubject<SunCalc.GetTimesResult | undefined>(undefined)
-			}
 			let closed = false
 			let updateRetry: NodeJS.Timeout | undefined
 			let dailyCron: CronJob | undefined
@@ -60,6 +57,11 @@ export = (RED: NodeRED.NodeAPI): void => {
 				dailyCron = installDailyCronjob()
 			} catch (error) {
 				node.error(error)
+			}
+		},
+		{
+			credentials: {
+				sunTimes: new BehaviorSubject(undefined)
 			}
 		}
 	)

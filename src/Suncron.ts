@@ -7,7 +7,7 @@ import { SuncronLocationState } from './SuncronLocationDef'
 import { Subscription } from 'rxjs'
 
 export = (RED: NodeRED.NodeAPI): void => {
-	RED.nodes.registerType('suncron',
+	RED.nodes.registerType<NodeRED.Node<{}>, SuncronRuntimeConfig, {}, {}>('suncron',
 		function (this: NodeRED.Node, config: SuncronRuntimeConfig): void {
 			RED.nodes.createNode(this, config)
 			const node = this
@@ -133,6 +133,9 @@ export = (RED: NodeRED.NodeAPI): void => {
 			} catch (error) {
 				node.error(error)
 			}
+		},
+		{
+			credentials: {}
 		}
 	)
 }
