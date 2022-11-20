@@ -12,4 +12,5 @@ export interface SunTimeOfDayEditorConfig extends SunTimeOfDayConfig, EditorClie
 interface SunTimeOfDayConfig {
 	location: string
 	dataPoints: Array<SunTimeOfDayDataPoint>
+	outputs: number
 }

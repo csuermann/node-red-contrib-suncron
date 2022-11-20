@@ -15,7 +15,9 @@ RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
 				event: 'midnight',
 				offset: 1440
 			}
-			] }
+			]
+		},
+		outputs: { value: 1 }
 	},
 	inputs: 1,
 	outputs: 1,
