@@ -4,6 +4,7 @@ RED.nodes.registerType<SuncronEditorConfig>('suncron', {
 	category: 'common',
 	color: '#FFCC66',
 	defaults: {
+		name: { value: '' },
 		location: { value: '', type: 'suncron-location', required: true },
 		sunEventType: { value: 'sunrise' },
 		payload: { value: '', required: false, validate: RED.validators.typedInput('payloadType') },
