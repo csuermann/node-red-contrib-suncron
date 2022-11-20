@@ -1,16 +1,4 @@
-<script type="text/javascript">
-	RED.nodes.registerType('suncron-location', {
-		category: 'config',
-		defaults: {
-			name: { value: '' },
-			lat: { value: '', required: true, validate: RED.validators.number() },
-			lon: { value: '', required: true, validate: RED.validators.number() }
-		},
-		label: function () {
-			return this.name || 'suncron-location'
-		}
-	})
-</script>
+<script type="text/javascript">${require('./SuncronLocation.html.js')}</script>
 
 <script type="text/html" data-template-name="suncron-location">
 	<div class="form-row">

@@ -1,5 +1,6 @@
 node_modules
 .DS_Store
 *.tgz
+.html-build
 dist
 *.tsbuildinfo
