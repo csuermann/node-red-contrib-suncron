@@ -1,0 +1,65 @@
+<script type="text/javascript">
+	RED.nodes.registerType('sun-time-of-day', {
+		category: 'function',
+		color: '#FFCC66',
+		defaults: {
+			name: { value: '' },
+			location: { type: 'suncron-location', required: true },
+			dataPoints: { value: [] },
+			outputs: { value: 1 }
+		},
+		inputs: 1,
+		outputs: 1,
+		outputLabels: function(index) {
+			// TODO
+			return ''
+		},
+		icon: 'switch.svg',
+		label: function () {
+			if (this.name) {
+				return this.name
+			} else {
+				// TODO
+				return 'sun-time-of-day'
+			}
+		},
+		oneditprepare: function () {
+			var node = this
+			$(`#node-input-rule-container`).css('min-height','150px').css('min-width','450px').editableList({
+				addItem: function(container,i,opt) {
+					// TODO
+				},
+				removeItem: function(opt) {
+					// TODO
+				},
+            sortItems: function(rules) {
+					// TODO
+				},
+				sortable: true,
+				removable: true
+			})
+		},
+		oneditsave: function() {
+			// TODO
+		},
+		oneditresize: function(size) {
+			// TODO
+		}
+	})
+</script>
+
+<script type="text/html" data-template-name="sun-time-of-day">
+	<div class="form-row">
+		 <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
+		 <input type="text" id="node-input-name" style="width: calc(100% - 105px)" data-i18n="[placeholder]common.label.name">
+	</div>
+
+	<div class="form-row">
+		<label for="node-input-location"><i class="fa fa-globe"></i> Location</label>
+		<input type="text" id="node-input-location">
+	</div>
+
+	<div class="form-row node-input-rule-container-row">
+		 <ol id="node-input-rule-container"></ol>
+	</div>
+</script>

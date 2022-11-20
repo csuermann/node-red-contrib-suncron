@@ -1,9 +1,10 @@
 import * as NodeRED from 'node-red'
 import dayjs from 'dayjs'
+import { SunEvent } from './SuncronLocationDef'
 
 export interface SuncronConfig extends NodeRED.NodeDef {
 	location: string
-	sunEventType: string
+	sunEventType: SunEvent
 	payload: string
 	payloadType: string
 	topic: string
