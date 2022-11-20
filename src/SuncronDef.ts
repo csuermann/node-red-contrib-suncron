@@ -1,8 +1,11 @@
 import * as NodeRED from 'node-red'
+import * as EditorClient from '@node-red/editor-client'
 import dayjs from 'dayjs'
 import { SunEvent } from './SuncronLocationDef'
 
-export interface SuncronConfig extends NodeRED.NodeDef {
+export interface SuncronRuntimeConfig extends SuncronConfig, NodeRED.NodeDef {}
+export interface SuncronEditorConfig extends SuncronConfig, EditorClient.NodeProperties {}
+interface SuncronConfig {
 	location: string
 	sunEventType: SunEvent
 	payload: string
