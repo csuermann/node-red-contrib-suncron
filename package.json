@@ -20,7 +20,7 @@
     "lint": "eslint src/**/*.ts",
     "test": "mocha \"test/**/*_spec.js\"",
     "clean": "rm -f *.tsbuildinfo && rm -rf dist .html-build && rm -f *.tgz",
-    "build": "tsc && rm -f dist/*.html && rm -rf .html-build && mkdir .html-build && cp dist/*.html.js src/*.html .html-build && html-includes --src .html-build --dest dist"
+    "build": "tsc && rm -f dist/*.html && rm -rf .html-build && mkdir .html-build && cp dist/*.html.js src/**.html .html-build && html-includes --src .html-build --dest dist"
   },
   "node-red": {
     "nodes": {
