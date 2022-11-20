@@ -17,7 +17,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 				if (outputCount == 0) {
 					return []
 				}
-				const retVal = Array<any | null>(outputCount)
+				const retVal = Array<NodeRED.NodeMessageInFlow | null>(outputCount)
 				retVal.fill(null)
 				const sunTimes = location.credentials.sunTimes.value
 				if (sunTimes == undefined) {
