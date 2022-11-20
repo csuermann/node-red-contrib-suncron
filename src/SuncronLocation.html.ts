@@ -1,7 +1,4 @@
-import { EditorRED } from 'node-red'
-import { SuncronLocationEditorConfig } from './SuncronLocationDef'
-
-declare const RED: EditorRED
+type SuncronLocationEditorConfig = import('./SuncronLocationDef').SuncronLocationEditorConfig
 
 RED.nodes.registerType<SuncronLocationEditorConfig>('suncron-location', {
 	category: 'config',

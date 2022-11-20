@@ -1,7 +1,4 @@
-import { EditorRED } from 'node-red'
-import { SuncronEditorConfig } from './SuncronDef'
-
-declare const RED: EditorRED
+type SuncronEditorConfig = import('./SuncronDef').SuncronEditorConfig
 
 RED.nodes.registerType<SuncronEditorConfig>('suncron', {
 	category: 'common',
