@@ -1,6 +1,6 @@
 import * as NodeRED from 'node-red'
 import { CronJob } from 'cron'
-import { SuncronConfig, SuncronEvent } from './SuncronDef'
+import { SuncronRuntimeConfig, SuncronEvent } from './SuncronDef'
 import * as SunCalc from 'suncalc'
 import dayjs from 'dayjs'
 import { SuncronLocationState } from './SuncronLocationDef'
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs'
 
 export = (RED: NodeRED.NodeAPI): void => {
 	RED.nodes.registerType('suncron',
-		function (this: NodeRED.Node, config: SuncronConfig): void {
+		function (this: NodeRED.Node, config: SuncronRuntimeConfig): void {
 			RED.nodes.createNode(this, config)
 			const node = this
 			let sunTimesObserver: Subscription | undefined
