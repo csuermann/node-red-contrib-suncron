@@ -2,7 +2,7 @@ import * as NodeRED from 'node-red'
 import { SunEvent } from './SuncronLocationDef'
 
 export interface SunTimeOfDayDataPoint {
-	event: SunEvent
+	event: SunEvent | 'midnight'
 	offset: number
 }
 

@@ -26,7 +26,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 				const payloadType = config.payloadType
 				const topic = config.topic
 				const offset = config.offset
-				const cronTime = dayjs(sunEventTime).add(offset, 'minute')
+				const cronTime = dayjs(sunEventTime).add(offset, 'm')
 				return [
 					{
 						cronTime,
