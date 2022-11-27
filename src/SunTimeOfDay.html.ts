@@ -2,6 +2,7 @@ type SunTimeOfDayDataPoint = import('./SunTimeOfDayDef').SunTimeOfDayDataPoint
 type SunTimeOfDayEditorConfig = import('./SunTimeOfDayDef').SunTimeOfDayEditorConfig
 
 function exportDataPoint(dataPoint: HTMLElement): SunTimeOfDayDataPoint {
+	// TODO
 	return {
 		event: 'midnight',
 		offset: 1440
@@ -43,7 +44,9 @@ RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
 			}
 		]
 		},
-		outputs: { value: 1 }
+		outputs: { value: 1, validate: function(val) {
+			return parseInt(val) > 0
+		}}
 	},
 	inputs: 1,
 	outputs: 1,
@@ -74,27 +77,25 @@ RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
 						display: 'flex',
 						'align-items': 'center'
 					})
-					const inputRows = $('<div></div>',{style:'flex-grow:1'}).appendTo(container)
+					const inputRows = $('<div></div>',{style:'flex-grow:1'})
+						.appendTo(container)
 
-					const row1 = $('<div></div>',{style:'display: flex;'}).appendTo(inputRows)
+					const row1 = $('<div></div>',{style:'display: flex;'})
+						.appendTo(inputRows)
 					row1.append($('<label><i class="fa fa-clock-o"></i> Event</label>'))
-					const eventPicker = $('<select/>',{style:'width:120px; text-align: center;'}).appendTo(row1)
+					const eventPicker = $('<select/>',{style:'width:120px; text-align: center;'})
+						.appendTo(row1)
 					for (const event of events) {
 						eventPicker.append($('<option></option>', {selected:(dataPoint.event == event)})
 							.val(event)
 							.text(event))
 					}
 
-					const row2 = $('<div></div>',{style:'display: flex; padding-top: 5px;'}).appendTo(inputRows)
+					const row2 = $('<div></div>',{style:'display: flex; padding-top: 5px;'})
+						.appendTo(inputRows)
 					row2.append($('<label><i class="fa fa-sliders"></i> Offset[min]</label>'))
-					row2.append($('<input/>', {type:'number'}))
-					// TODO
-				},
-				removeItem: function(opt) {
-					// TODO
-				},
-				sortItems: function(rules) {
-					// TODO
+					row2.append($('<input/>', {type:'number'})
+						.val(dataPoint.offset))
 				},
 				sortable: true,
 				removable: true
