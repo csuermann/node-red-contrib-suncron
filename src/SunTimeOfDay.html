@@ -1,0 +1,25 @@
+<script type="text/javascript">
+${require('./GetDisplayName.html.js')}
+${require('./SunTimeOfDay.html.js')}
+</script>
+
+<script type="text/html" data-template-name="sun-time-of-day">
+	<div class="form-row">
+		 <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+		 <input type="text" id="node-input-name" placeholder="Name">
+	</div>
+
+	<div class="form-row">
+		<label for="node-input-location"><i class="fa fa-globe"></i> Location</label>
+		<input type="text" id="node-input-location">
+	</div>
+
+	<div class="form-row node-input-rule-container-row">
+		<input type="hidden" id="node-input-outputs"/>
+		 <ol id="node-input-rule-container"></ol>
+	</div>
+</script>
+
+<script type="text/html" data-help-name="sun-time-of-day">
+	<p>TODO</p>
+</script>

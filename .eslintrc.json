@@ -22,6 +22,7 @@
 		"indent": ["warn", "tab"],
 		"quotes": ["warn", "single"],
 		"semi": ["warn", "never"],
+		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-floating-promises": ["error", { "ignoreVoid": true }],
 		"@typescript-eslint/no-this-alias": "off",
 		"rxjs/no-ignored-observable": "error",

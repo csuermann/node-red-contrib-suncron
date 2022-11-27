@@ -1,4 +1,4 @@
 **
 !dist/**
-dist/**.html.js
-dist/EditorRED.js
+dist/*.html.js
+dist/**/*.html.js
