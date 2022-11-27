@@ -1,30 +1,28 @@
-type SunTimeOfDayDataPoint = import('./SunTimeOfDayDef').SunTimeOfDayDataPoint
 type SunTimeOfDayEditorConfig = import('./SunTimeOfDayDef').SunTimeOfDayEditorConfig
 
-function exportDataPoint(dataPoint: HTMLElement): SunTimeOfDayDataPoint {
-	// TODO
-	return {
-		event: 'midnight',
-		offset: 1440
-	}
+function exportDataPoint(element: HTMLElement): SuncronDataPoint {
+	const elementQuery = $(element)
+	const event = elementQuery.find('select').val() as any
+	const offset = elementQuery.find('input').val() as number
+	return { event, offset }
 }
 
 const events = [
 	'midnight',
-	'dawn',
-	'dusk',
-	'goldenHour',
-	'goldenHourEnd',
-	'nadir',
-	'nauticalDawn',
-	'nauticalDusk',
-	'night',
-	'nightEnd',
-	'solarNoon',
 	'sunrise',
 	'sunriseEnd',
+	'goldenHourEnd',
+	'solarNoon',
+	'goldenHour',
+	'sunsetStart',
 	'sunset',
-	'sunsetStart'
+	'dusk',
+	'nauticalDusk',
+	'night',
+	'nadir',
+	'nightEnd',
+	'nauticalDawn',
+	'dawn'
 ]
 
 RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
@@ -35,7 +33,7 @@ RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
 		location: { value: '', type: 'suncron-location', required: true },
 		dataPoints: { value: [
 			{
-				event: 'sunset',
+				event: 'sunsetStart',
 				offset: 0
 			},
 			{
@@ -50,18 +48,28 @@ RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
 	},
 	inputs: 1,
 	outputs: 1,
-	outputLabels: function(index) {
-		// TODO
-		return ''
-	},
 	icon: 'switch.svg',
 	paletteLabel: 'sun time of day',
 	label: function () {
 		if (this.name) {
 			return this.name
 		} else {
-			// TODO
-			return 'sun-time-of-day'
+			if (this.outputs == 0) {
+				return 'sun-time-of-day'
+			}
+			let name = ''
+			let previousPointName = ''
+			for (const dataPoint of this.dataPoints) {
+				if (name != '') {
+					name += '\\n '
+				}
+				const currentPointName = getDisplayName(dataPoint)
+				if (previousPointName != '') {
+					name += `${previousPointName} <=> ${currentPointName}`
+				}
+				previousPointName = currentPointName
+			}
+			return name
 		}
 	},
 	oneditprepare: function () {
@@ -69,8 +77,8 @@ RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
 		$('#node-input-rule-container')
 			.css('min-height','150px')
 			.editableList({
-				addItem: function(container,i,opt) {
-					const dataPoint: SunTimeOfDayDataPoint = (opt as any).dataPoint || { event: 'midnight', offset: 0 }
+				addItem: function(container,_,opt) {
+					const dataPoint: SuncronDataPoint = (opt as any).dataPoint || { event: 'midnight', offset: 0 }
 					container.css({
 						overflow: 'hidden',
 						whiteSpace: 'nowrap',

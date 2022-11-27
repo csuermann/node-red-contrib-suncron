@@ -2,7 +2,7 @@
 // https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/function/10-switch.js
 import * as NodeRED from 'node-red'
 import { SuncronLocationState } from './SuncronLocationDef'
-import { SunTimeOfDayRuntimeConfig, SunTimeOfDayDataPoint } from './SunTimeOfDayDef'
+import { SunTimeOfDayRuntimeConfig, SuncronDataPoint } from './SunTimeOfDayDef'
 import dayjs from 'dayjs'
 
 export = (RED: NodeRED.NodeAPI): void => {
@@ -25,7 +25,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 					return retVal
 				}
 				const now = dayjs(Date.now())
-				const getTime = function (dataPoint: SunTimeOfDayDataPoint): dayjs.Dayjs | null {
+				const getTime = function (dataPoint: SuncronDataPoint): dayjs.Dayjs | null {
 					if (dataPoint.event == 'midnight') {
 						if (dataPoint.offset < 0) {
 							return null

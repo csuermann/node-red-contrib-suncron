@@ -19,22 +19,10 @@ RED.nodes.registerType<SuncronEditorConfig>('suncron', {
 		if (this.name) {
 			return this.name
 		} else {
-			if (this.offset == 0) {
-				return this.sunEventType
-			} else {
-				const sign = this.offset > 0 ? '+' : '-'
-				const offset = Math.abs(this.offset)
-				const hour = Math.floor(offset / 60)
-				const min = offset % 60
-				let name = this.sunEventType + ' ' + sign
-				if (hour > 0) {
-					name += hour + 'h'
-				}
-				if (min > 0) {
-					name += min + 'm'
-				}
-				return name
-			}
+			return getDisplayName({
+				event: this.sunEventType,
+				offset: this.offset
+			})
 		}
 	},
 	oneditprepare: function () {
