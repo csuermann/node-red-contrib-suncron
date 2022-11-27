@@ -1,9 +1,8 @@
 type SunTimeOfDayEditorConfig = import('./SunTimeOfDayDef').SunTimeOfDayEditorConfig
 
 function exportDataPoint(element: HTMLElement): SuncronDataPoint {
-	const elementQuery = $(element)
-	const event = elementQuery.find('select').val() as any
-	const offset = elementQuery.find('input').val() as number
+	const event = $(element).find('select').val() as any
+	const offset = $(element).find('input').val() as number
 	return { event, offset }
 }
 
