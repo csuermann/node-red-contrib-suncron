@@ -1,5 +1,3 @@
-// https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/function/10-switch.html
-// https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/function/10-switch.js
 import * as NodeRED from 'node-red'
 import { SuncronLocationState } from './SuncronLocationDef'
 import { SunTimeOfDayRuntimeConfig, SuncronDataPoint } from './SunTimeOfDayDef'
@@ -13,16 +11,15 @@ export = (RED: NodeRED.NodeAPI): void => {
 			const location = RED.nodes.getNode(config.location) as NodeRED.Node<SuncronLocationState>
 
 			node.on('input', function(msg) {
-				const outputCount = config.dataPoints.length < 2 ? 0 : config.dataPoints.length - 1
-				if (outputCount == 0) {
-					return []
+				if (config.outputs == 0) {
+					return
 				}
-				const retVal = Array<NodeRED.NodeMessageInFlow | null>(outputCount)
+				const retVal = Array<NodeRED.NodeMessageInFlow | null>(config.outputs)
 				retVal.fill(null)
 				const sunTimes = location.credentials.sunTimes.value
 				if (sunTimes == undefined) {
 					node.error('Tried to use sun-time-of-day but sun times are not available yet.')
-					return retVal
+					return
 				}
 				const now = dayjs(Date.now())
 				const getTime = function (dataPoint: SuncronDataPoint): dayjs.Dayjs | null {
@@ -31,10 +28,11 @@ export = (RED: NodeRED.NodeAPI): void => {
 							return null
 						}
 						return now
-							.set('h', dataPoint.offset / 60)
+							.set('h', (dataPoint.offset / 60) % 24)
 							.set('m', dataPoint.offset % 60)
 							.set('s', 0)
 							.set('ms', 0)
+							.add(dataPoint.offset / 60 / 24, 'day')
 					}
 					const eventType = dataPoint.event
 					const sunEventTime = dayjs(sunTimes[eventType])
@@ -44,18 +42,18 @@ export = (RED: NodeRED.NodeAPI): void => {
 						return null
 					}
 				}
-				for (let i = 0; i < config.dataPoints.length - 1; i++) {
+				for (let i = 0; i < config.outputs; i++) {
 					const first = getTime(config.dataPoints[i])
 					if (first == null) { continue }
 					const second = getTime(config.dataPoints[i + 1])
 					if (second == null) { continue }
 					// TODO: handle second event happening before first event
-					if (first < now && now < second) {
+					if (first.isBefore(now) && now.isBefore(second)) {
 						retVal[i] = msg
+						node.send(retVal)
 						break
 					}
 				}
-				return retVal
 			})
 		}
 	)
