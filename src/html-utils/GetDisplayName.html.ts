@@ -10,7 +10,7 @@ function getDisplayName(dataPoint: SuncronDataPoint): string {
 		const hour = Math.floor(offset / 60)
 		const min = offset % 60
 		if (dataPoint.event == 'midnight' && dataPoint.offset > 0) {
-			return `${hour}:${min.toLocaleString(undefined, {minimumIntegerDigits: 2})}`
+			return `${hour % 24}:${min.toLocaleString(undefined, {minimumIntegerDigits: 2})}`
 		}
 		let name = dataPoint.event + ' ' + sign
 		if (hour > 0) {
