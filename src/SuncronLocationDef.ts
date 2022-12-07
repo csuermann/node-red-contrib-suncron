@@ -11,7 +11,7 @@ interface SuncronLocationConfig {
 }
 
 export interface SuncronLocationState {
-	sunTimes: BehaviorSubject<SunCalc.GetTimesResult | undefined>
+	sunTimes: BehaviorSubject<SunCalc.GetTimesResult>
 }
 
 export type SunEvent = keyof SunCalc.GetTimesResult

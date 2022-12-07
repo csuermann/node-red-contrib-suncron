@@ -9,11 +9,7 @@ export = (RED: NodeRED.NodeAPI): void => {
 		function (this: NodeRED.Node<SuncronLocationState>, config: SuncronLocationRuntimeConfig): void {
 			RED.nodes.createNode(this, config)
 			const node = this
-			node.credentials = {
-				sunTimes: new BehaviorSubject<SunCalc.GetTimesResult | undefined>(undefined)
-			}
-
-			const updateSunTimes = function (): void {
+			const getTimes = function (): SunCalc.GetTimesResult {
 				const today = new Date()
 				const midday = new Date(
 					today.getFullYear(),
@@ -24,18 +20,19 @@ export = (RED: NodeRED.NodeAPI): void => {
 					0,
 					0
 				)
-				const sunTimes = SunCalc.getTimes(midday, config.lat, config.lon)
-				node.credentials.sunTimes.next(sunTimes)
+				return SunCalc.getTimes(midday, config.lat, config.lon)
+			}
+			node.credentials = {
+				sunTimes: new BehaviorSubject<SunCalc.GetTimesResult>(getTimes())
 			}
 
 			const dailyCron = new CronJob({
 				cronTime: '1 0 0 * * *',
 				onTick: () => {
-					updateSunTimes()
+					node.credentials.sunTimes.next(getTimes())
 				},
 			})
 			
-			updateSunTimes()
 			dailyCron.start()
 
 			node.on('close', function (): void {
