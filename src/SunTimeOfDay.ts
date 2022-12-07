@@ -17,10 +17,6 @@ export = (RED: NodeRED.NodeAPI): void => {
 				const retVal = Array<NodeRED.NodeMessageInFlow | null>(config.outputs)
 				retVal.fill(null)
 				const sunTimes = location.credentials.sunTimes.value
-				if (sunTimes == undefined) {
-					node.error('Tried to use sun-time-of-day but sun times are not available yet.')
-					return
-				}
 				const now = dayjs(Date.now())
 				const getTime = function (dataPoint: SuncronDataPoint): dayjs.Dayjs | null {
 					if (dataPoint.event == 'midnight') {

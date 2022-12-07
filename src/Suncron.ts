@@ -126,7 +126,6 @@ export = (RED: NodeRED.NodeAPI): void => {
 				setNodeStatus('Setting up...')
 				const location = RED.nodes.getNode(config.location) as NodeRED.Node<SuncronLocationState>
 				sunTimesObserver = location.credentials.sunTimes.subscribe({ next: (sunTimes) => {
-					if (sunTimes == undefined) { return }
 					schedule = calcScheduleForToday(sunTimes)
 					installMsgCronjobs(schedule)
 				}})
