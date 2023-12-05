@@ -37,7 +37,7 @@ RED.nodes.registerType<SunTimeOfDayEditorConfig>('sun-time-of-day', {
 			},
 			{
 				event: 'midnight',
-				offset: 1440
+				offset: 0
 			}
 		]
 		},
