@@ -43,11 +43,18 @@ export = (RED: NodeRED.NodeAPI): void => {
 					if (first == null) { continue }
 					const second = getTime(config.dataPoints[i + 1])
 					if (second == null) { continue }
-					// TODO: handle second event happening before first event
-					if (first.isBefore(now) && now.isBefore(second)) {
-						retVal[i] = msg
-						node.send(retVal)
-						break
+					if (first.isBefore(second)) {
+						if (first.isBefore(now) && now.isBefore(second)) {
+							retVal[i] = msg
+							node.send(retVal)
+							break
+						}
+					} else {
+						if (first.isBefore(now) || now.isBefore(second)) {
+							retVal[i] = msg
+							node.send(retVal)
+							break
+						}
 					}
 				}
 			})
