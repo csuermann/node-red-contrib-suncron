@@ -52,14 +52,16 @@ The offsets can be overwritten at runtime by passing a config object as `msg.pay
 
 ### Sun events
 
-The node will emit messages at the specified sun events (respecting offsets) or when it receives an inbound msg with a non-object paylod, e.g. `true`. Outbound messages will have a `msg.payload` and `msg.topic` as configured in the editor. Those messages also have a `schedule` attribute containing an object with details about the schedule of the current date. The schedule contains only events which have been configured with a payload.
+The node will emit messages at the specified sun events (respecting offsets) or when it receives an inbound msg with a non-object payload, e.g. `true`. Outbound messages will have a `msg.payload` and `msg.topic` as configured in the editor. Those messages also have a `schedule` attribute containing an object with details about the schedule of the current date. The schedule contains only events which have been configured with a payload.
 
 Each event has the following attributes:
 
-- `event` is the name of the sun event
-- `sunEventTime` refers to the unadjusted time of the respective sun event.
-- `cronTime` refers to the adjusted time, i.e. taking the offset into account.
-- `offset` refers to the configured offset in seconds.
+| Attribute       | Description                                       |
+|-----------------|---------------------------------------------------|
+| `event`         | The name of the sun event                         |
+| `sunEventTime`  | The unadjusted time of the respective sun event   |
+| `cronTime`      | The adjusted time, taking the offset into account |
+| `offset`        | The configured offset in seconds                  |
 
 #### Example `msg.schedule` object
 
@@ -93,7 +95,7 @@ If the checkbox "Emit schedule when updated" is ticked, the node will emit addit
 
 ## Known issues
 
-Depending on your configured location (lat / lon) and time of the year, you might notice some sun events not being triggered. This is not an error but how lighting works on earth. For example in polar regions, they sometimes have day (or night) for weeks at a time. But even in Berlin / Germany there might not always be a distinct 'night' event as the sun during summer does not go below the astronomical twilight treshold.
+Depending on your configured location (lat / lon) and time of the year, you might notice some sun events not being triggered. This is not an error but how lighting works on earth. For example in polar regions, they sometimes have day (or night) for weeks at a time. But even in Berlin / Germany there might not always be a distinct 'night' event as the sun during summer does not go below the astronomical twilight threshold.
 
 ## Contributions and Suggestions
 

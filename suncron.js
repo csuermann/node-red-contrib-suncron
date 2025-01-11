@@ -154,7 +154,7 @@ module.exports = function (RED) {
           event.cronTime = dayjs().add(i * 5, 'second')
         }
 
-        let cron = new CronJob({
+        let cron = CronJob.from({
           cronTime: event.cronTime.toDate(),
           onTick: () => {
             ejectMsg(event, schedule)
@@ -189,7 +189,7 @@ module.exports = function (RED) {
         ? '5 * * * * *'
         : '5 0 0 * * *'
 
-      const cron = new CronJob({
+      const cron = CronJob.from({
         cronTime,
         onTick: () => {
           schedule = calcScheduleForToday()
