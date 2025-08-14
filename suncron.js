@@ -154,6 +154,12 @@ module.exports = function (RED) {
           event.cronTime = dayjs().add(i * 5, 'second')
         }
 
+        // Skip scheduling if the event time is in the past
+        if (event.cronTime.isBefore(dayjs())) {
+          debug(`${event.event}: Skipping event scheduled for ${event.cronTime.format('HH:mm')} as it's in the past`)
+          continue
+        }
+
         let cron = CronJob.from({
           cronTime: event.cronTime.toDate(),
           onTick: () => {
