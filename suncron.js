@@ -160,21 +160,21 @@ module.exports = function (RED) {
           continue
         }
 
-        let cron = CronJob.from({
-          cronTime: event.cronTime.toDate(),
-          onTick: () => {
-            ejectMsg(event, schedule)
-            setNodeStatus(
-              `now: ${event.event} @ ${event.cronTime.format('HH:mm')}`,
-              'green'
-            )
-            setTimeout(() => {
-              setNodeStatusToNextEvent(schedule)
-            }, 2000)
-          },
-        })
-
         try {
+          let cron = CronJob.from({
+            cronTime: event.cronTime.toDate(),
+            onTick: () => {
+              ejectMsg(event, schedule)
+              setNodeStatus(
+                `now: ${event.event} @ ${event.cronTime.format('HH:mm')}`,
+                'green'
+              )
+              setTimeout(() => {
+                setNodeStatusToNextEvent(schedule)
+              }, 2000)
+            },
+          })
+
           cron.start()
           msgCrons.push(cron)
         } catch (err) {
@@ -195,17 +195,22 @@ module.exports = function (RED) {
         ? '5 * * * * *'
         : '5 0 0 * * *'
 
-      const cron = CronJob.from({
-        cronTime,
-        onTick: () => {
-          schedule = calcScheduleForToday()
-          installMsgCronjobs(schedule)
-          ejectSchedule(schedule)
-          setNodeStatusToNextEvent(schedule)
-        },
-      })
-      cron.start()
-      return cron
+      try {
+        const cron = CronJob.from({
+          cronTime,
+          onTick: () => {
+            schedule = calcScheduleForToday()
+            installMsgCronjobs(schedule)
+            ejectSchedule(schedule)
+            setNodeStatusToNextEvent(schedule)
+          },
+        })
+        cron.start()
+        return cron
+      } catch (err) {
+        debug(`Daily cron: ${err.message}`)
+        return null
+      }
     }
 
     const debug = function (debugMsg) {
@@ -339,7 +344,9 @@ module.exports = function (RED) {
 
     node.on('close', function () {
       stopMsgCrons()
-      dailyCron.stop()
+      if (dailyCron) {
+        dailyCron.stop()
+      }
     })
     ;(function () {
       // on startup:
