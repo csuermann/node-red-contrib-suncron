@@ -199,10 +199,14 @@ module.exports = function (RED) {
         const cron = CronJob.from({
           cronTime,
           onTick: () => {
-            schedule = calcScheduleForToday()
-            installMsgCronjobs(schedule)
-            ejectSchedule(schedule)
-            setNodeStatusToNextEvent(schedule)
+            try {
+              schedule = calcScheduleForToday()
+              installMsgCronjobs(schedule)
+              ejectSchedule(schedule)
+              setNodeStatusToNextEvent(schedule)
+            } catch (tickErr) {
+              debug(`Daily cron onTick error: ${tickErr.message}`)
+            }
           },
         })
         cron.start()
