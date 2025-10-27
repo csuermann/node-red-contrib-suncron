@@ -155,8 +155,15 @@ module.exports = function (RED) {
         }
 
         // Skip scheduling if the event time is in the past
-        if (event.cronTime.isBefore(dayjs())) {
-          debug(`${event.event}: Skipping event scheduled for ${event.cronTime.format('HH:mm')} as it's in the past`)
+        // Add a 3-second buffer to avoid skipping events too close to now
+        if (event.cronTime.isBefore(dayjs().add(3, 'second'))) {
+          debug(
+            `${
+              event.event
+            }: Skipping event scheduled for ${event.cronTime.format(
+              'HH:mm'
+            )} as it's in the past (with 3s buffer)`
+          )
           continue
         }
 
