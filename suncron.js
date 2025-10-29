@@ -180,6 +180,11 @@ module.exports = function (RED) {
                 setNodeStatusToNextEvent(schedule)
               }, 2000)
             },
+            name: `${event.event}-${event.cronTime.toISOString()}`,
+            threshold: 3000,
+            errorHandler: (err) => {
+              debug(`${event.event}: ${err.message}`)
+            },
           })
 
           cron.start()
